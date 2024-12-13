@@ -7,7 +7,7 @@ import PayableCreationDto from '../payable/dto/PayableCreationDto';
 export class DeadProducerService {
   private channelWrapper: ChannelWrapper;
   constructor() {
-    const connection = amqp.connect(['amqp://rabbitmq:rabbitmq@rabbitmq:5672']);
+    const connection = amqp.connect(['amqp://admin:admin@rabbitmq:5672']);
     this.channelWrapper = connection.createChannel({
       setup: (channel: Channel) => {
         return channel.assertQueue('dead_queue', { durable: true });
