@@ -28,8 +28,8 @@ async function bootstrap() {
   app.connectMicroservice({
     transport: Transport.RMQ,
     options: {
-      urls: ['amqp://rabbitmq:rabbitmq@rabbitmq:5672'],
-      queue: 'payable_batch',
+      urls: ['amqp://admin:admin@rabbitmq:5672'],
+      queue: 'payable_queue',
       queueOptions: {
         durable: true,
       },
