@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MicroServicoService } from './micro-servico-consumer.service';
-import { PayableController } from './micro-servico.controller';
+import { MicroServicoController } from './micro-servico.controller';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import PayableRepository from './micro-servico.repository';
 import { DeadProducerService } from './dead-producer.service';
@@ -9,7 +9,7 @@ import { EmailService } from '../email/email.service';
 
 @Module({
   imports: [PrismaModule, EmailModule],
-  controllers: [PayableController],
+  controllers: [MicroServicoController],
   providers: [
     MicroServicoService,
     PayableRepository,
