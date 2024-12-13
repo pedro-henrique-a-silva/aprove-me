@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import Assignor from '../entity/Assignor';
 import AssignorRepository from './assignor.repository';
 import AssignorDto from './dto/AssignorDto';
@@ -9,6 +15,14 @@ export class AssignorService {
   constructor(private assignorRepository: AssignorRepository) {}
 
   async createAssignorRegister(assignor: Assignor): Promise<AssignorDto> {
+    const assignorExists = await this.assignorRepository.findAssignorByEmail(
+      assignor.email,
+    );
+
+    if (assignorExists) {
+      throw new ConflictException('Assignor already exists.');
+    }
+
     assignor.password = await bcrypt.hash(assignor.password, 10);
 
     const createdAssignor =
@@ -53,7 +67,7 @@ export class AssignorService {
     });
 
     if (!assignor) {
-      throw new HttpException('Assignor not found.', HttpStatus.NOT_FOUND);
+      throw new NotFoundException('Assignor not found.');
     }
 
     return;
@@ -63,7 +77,7 @@ export class AssignorService {
     const user = await this.assignorRepository.findAssignorByEmail(email);
 
     if (!user) {
-      throw new HttpException('User not found.', HttpStatus.NOT_FOUND);
+      throw new NotFoundException('User not found.');
     }
 
     return user;
