@@ -18,7 +18,7 @@ export class MicroServicoService {
     private readonly payableRepository: PayableRepository,
     private readonly deadProducerService: DeadProducerService,
   ) {
-    const connection = amqp.connect(['amqp://rabbitmq:rabbitmq@rabbitmq:5672']);
+    const connection = amqp.connect(['amqp://admin:admin@rabbitmq:5672']);
     this.channelWrapper = connection.createChannel();
   }
 
@@ -27,23 +27,36 @@ export class MicroServicoService {
       const payableString = JSON.stringify(payable);
       let retries = 0;
       let success = false;
-      // const assignor = await this.assignorService.findOne(payable.assignorId);
+      const assignor = await this.payableRepository.findAssignorById(
+        payable.assignorId,
+      );
+
       Logger.log(`Trying new Payable -> ${payableString}`);
       while (!success && retries < this.maxAttempts) {
         try {
-          const payableCreated =
-            await this.payableRepository.createPayableRegister(
-              payable.toEntity(),
-            );
+          await this.payableRepository.createPayableRegister(
+            payable.toEntity(),
+          );
 
           success = true;
-          Logger.log(`Insert payable -> ${payableCreated}`);
+          this.emailService.sendSuccessPaymentEmail(
+            assignor.email,
+            assignor.name,
+            payable.value,
+          );
+
+          Logger.log(`Insert payable -> ${payableString}`);
         } catch (error) {
           retries++;
         }
       }
       if (!success) {
         await this.deadProducerService.addToDeadQueue(payable);
+        await this.emailService.sendSuccessPaymentEmail(
+          assignor.email,
+          assignor.name,
+          payable.value,
+        );
       }
     }
   }
