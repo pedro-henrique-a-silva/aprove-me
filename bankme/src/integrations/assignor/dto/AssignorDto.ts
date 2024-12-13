@@ -42,6 +42,7 @@ export default class AssignorDto {
 
   public toJSON() {
     return {
+      id: this.id,
       document: this.document,
       email: this.email,
       phone: this.phone,
