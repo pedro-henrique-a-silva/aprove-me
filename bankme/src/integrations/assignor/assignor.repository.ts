@@ -8,12 +8,6 @@ export default class AssignorRepository {
   constructor(private prismaService: PrismaService) {}
 
   async createAssignorRegister(assignor: Assignor): Promise<Assignor> {
-    const assignorFromDB = await this.findAssignorByDocument(assignor.document);
-
-    if (assignorFromDB) {
-      return assignorFromDB;
-    }
-
     const createdAssignor = await this.prismaService.assignor.create({
       data: assignor.toCreate(),
     });
