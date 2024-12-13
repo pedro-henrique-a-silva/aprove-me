@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import Payable from '../entity/Payable';
 import PayableRepository from './payable.repository';
 import { IPayable } from '../types/IPayables';
@@ -15,7 +20,7 @@ export class PayableService {
     private payableRepository: PayableRepository,
     private assignorService: AssignorService,
   ) {
-    const connection = amqp.connect(['amqp://rabbitmq:rabbitmq@rabbitmq:5672']);
+    const connection = amqp.connect(['amqp://admin:admin@rabbitmq:5672']);
     this.channelWrapper = connection.createChannel({
       setup: (channel: Channel) => {
         return channel.assertQueue('payable_queue', { durable: true });
@@ -82,22 +87,16 @@ export class PayableService {
 
     try {
       const message = JSON.stringify({
-        pattern: 'payable_batch',
+        pattern: 'payable_queue',
         payables: batchData,
       });
 
-      await this.channelWrapper.sendToQueue(
-        'payable_batch',
-        Buffer.from(message),
-        {
-          persistent: true,
-        } as any,
-      );
+      this.channelWrapper.sendToQueue('payable_queue', Buffer.from(message), {
+        persistent: true,
+      } as any);
+      console.log('enviado para a fila');
     } catch (error) {
-      throw new HttpException(
-        'Error sending payable to queue',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new InternalServerErrorException('Error sending payable to queue');
     }
 
     // this.client.emit('payable_batch', batchData);
