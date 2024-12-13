@@ -1,4 +1,4 @@
-import { IPayable } from '../types/IPayables';
+import { IPayable } from '../../types/IPayables';
 
 export default class PayableDto {
   id: string;

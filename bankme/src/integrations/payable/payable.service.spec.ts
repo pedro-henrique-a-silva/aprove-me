@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PayableService } from './payable.service';
 import PayableRepository from './payable.repository';
 import { payableEntityMock, payableToCreationMock, req } from './mocks/mocks';
-import PayableDto from '../dto/PayableDto';
+import PayableDto from './dto/PayableDto';
 import { AssignorService } from '../assignor/assignor.service';
 import { assignorEntityMock } from '../assignor/mocks/mock';
 import { fakerPT_BR } from '@faker-js/faker';

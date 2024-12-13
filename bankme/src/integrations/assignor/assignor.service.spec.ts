@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AssignorService } from './assignor.service';
 import AssignorRepository from './assignor.repository';
 import { assignorEntityMock, assignorToCreationMock } from './mocks/mock';
-import AssignorDto from '../dto/AssignorDto';
+import AssignorDto from './dto/AssignorDto';
 import * as bcrypt from 'bcrypt';
 
 describe('AssignorService', () => {

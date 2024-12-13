@@ -1,6 +1,6 @@
 import Assignor from '../../entity/Assignor';
-import AssignorDto from '../../dto/AssignorDto';
-import AssignorCreationDto from '../../dto/AssignorCreationDto';
+import AssignorDto from '../dto/AssignorDto';
+import AssignorCreationDto from '../dto/AssignorCreationDto';
 import { fakerPT_BR } from '@faker-js/faker';
 
 const uuid = fakerPT_BR.string.uuid();

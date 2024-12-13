@@ -1,4 +1,4 @@
-import Assignor from '../entity/Assignor';
+import Assignor from '../../entity/Assignor';
 
 export default class AssignorDto {
   id: string;

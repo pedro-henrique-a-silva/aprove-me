@@ -1,5 +1,5 @@
 import { IsEmail, IsNotEmpty } from 'class-validator';
-import Assignor from '../entity/Assignor';
+import Assignor from '../../entity/Assignor';
 import { ApiProperty } from '@nestjs/swagger';
 
 export default class AssignorCreationDto {

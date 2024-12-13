@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { PayableService } from './payable.service';
 import Payable from '../entity/Payable';
-import PayableCreationDto from '../dto/PayableCreationDto';
+import PayableCreationDto from './dto/PayableCreationDto';
 import { AuthGuard } from '../auth/auth.guard';
 import { RequestWithUser } from '../types';
 import {

@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { AssignorService } from './assignor.service';
 import Assignor from '../entity/Assignor';
-import AssignorCreationDto from '../dto/AssignorCreationDto';
+import AssignorCreationDto from './dto/AssignorCreationDto';
 import { AuthGuard } from '../auth/auth.guard';
 import {
   ApiBearerAuth,

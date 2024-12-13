@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PayableController } from './payable.controller';
 import { PayableService } from './payable.service';
 import { payableCreatedMock, payableToCreationMock, req } from './mocks/mocks';
-import PayableDto from '../dto/PayableDto';
+import PayableDto from './dto/PayableDto';
 import { JwtService } from '@nestjs/jwt';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { fakerPT_BR } from '@faker-js/faker';

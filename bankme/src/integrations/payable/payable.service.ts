@@ -1,21 +1,27 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import Payable from '../entity/Payable';
 import PayableRepository from './payable.repository';
 import { IPayable } from '../types/IPayables';
-import PayableDto from '../dto/PayableDto';
-import PayableCreationDto from '../dto/PayableCreationDto';
-import { ClientProxy } from '@nestjs/microservices';
-import { uuid } from 'uuidv4';
+import PayableDto from './dto/PayableDto';
+import PayableCreationDto from './dto/PayableCreationDto';
 import { AssignorJwtPayload } from '../types';
 import { AssignorService } from '../assignor/assignor.service';
+import amqp, { Channel, ChannelWrapper } from 'amqp-connection-manager';
 
 @Injectable()
 export class PayableService {
+  private channelWrapper: ChannelWrapper;
   constructor(
     private payableRepository: PayableRepository,
     private assignorService: AssignorService,
-    @Inject('PAYABLE_SERVICE') private client: ClientProxy,
-  ) {}
+  ) {
+    const connection = amqp.connect(['amqp://rabbitmq:rabbitmq@rabbitmq:5672']);
+    this.channelWrapper = connection.createChannel({
+      setup: (channel: Channel) => {
+        return channel.assertQueue('payable_queue', { durable: true });
+      },
+    });
+  }
 
   async createPayableRegister(payable: Payable): Promise<IPayable> {
     const createdPayable =
@@ -74,24 +80,27 @@ export class PayableService {
       throw new HttpException('Assignor not found.', HttpStatus.NOT_FOUND);
     }
 
-    const batchId = uuid();
-    batchData.forEach((payableData: PayableCreationDto, _index, array) => {
-      const message = {
-        batchId,
-        email: assignor.email,
-        total: array.length,
-        ...payableData,
-      };
+    try {
+      const message = JSON.stringify({
+        pattern: 'payable_batch',
+        payables: batchData,
+      });
 
-      if (assignor.id !== payableData.assignorId) {
-        throw new HttpException(
-          'Assignor not allowed to create payable for another assignor.',
-          HttpStatus.FORBIDDEN,
-        );
-      }
+      await this.channelWrapper.sendToQueue(
+        'payable_batch',
+        Buffer.from(message),
+        {
+          persistent: true,
+        } as any,
+      );
+    } catch (error) {
+      throw new HttpException(
+        'Error sending payable to queue',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
 
-      this.client.emit('payable_batch', message);
-    });
+    // this.client.emit('payable_batch', batchData);
   }
 
   private async verifyAuthority(email: string, assignorId: string) {

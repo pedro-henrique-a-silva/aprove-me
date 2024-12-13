@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AssignorController } from './assignor.controller';
 import { AssignorService } from './assignor.service';
-import AssignorDto from '../dto/AssignorDto';
+import AssignorDto from './dto/AssignorDto';
 import { assignorToCreationMock, assignorCreatedMock } from './mocks/mock';
 import { JwtService } from '@nestjs/jwt';
 

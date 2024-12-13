@@ -1,5 +1,5 @@
 import { IsNotEmpty } from 'class-validator';
-import Payable from '../entity/Payable';
+import Payable from '../../entity/Payable';
 import { ApiProperty } from '@nestjs/swagger';
 
 export default class PayableCreationDto {

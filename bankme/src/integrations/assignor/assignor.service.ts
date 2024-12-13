@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import Assignor from '../entity/Assignor';
 import AssignorRepository from './assignor.repository';
-import AssignorDto from '../dto/AssignorDto';
+import AssignorDto from './dto/AssignorDto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
