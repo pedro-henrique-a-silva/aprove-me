@@ -7,12 +7,10 @@ import {
   Param,
   Post,
   Put,
-  UseGuards,
 } from '@nestjs/common';
 import { AssignorService } from './assignor.service';
 import Assignor from '../entity/Assignor';
 import AssignorCreationDto from './dto/AssignorCreationDto';
-import { AuthGuard } from '../auth/auth.guard';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -20,16 +18,17 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Public } from '../shared/custom-decorators/is-public.decorator';
 
-@Controller('/integrations/assignor/')
+@Controller('/integrations/assignor')
 @ApiBearerAuth()
 @ApiTags('Assignor')
 export class AssignorController {
   constructor(private assignorService: AssignorService) {}
 
-  @Post('/')
-  @UseGuards(AuthGuard)
+  @Post('')
   @HttpCode(201)
+  @Public()
   @ApiResponse({
     status: 201,
     description: 'The record has been successfully created.',
@@ -47,12 +46,10 @@ export class AssignorController {
 
     const responseAssignor =
       await this.assignorService.createAssignorRegister(assignor);
-
     return responseAssignor;
   }
 
   @Get('/:id')
-  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 200,
     description: 'The record was found.',
@@ -77,7 +74,6 @@ export class AssignorController {
   }
 
   @Put('/:id')
-  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 200,
     description: 'The record was updated sucessfully.',
@@ -114,7 +110,6 @@ export class AssignorController {
   }
 
   @Delete('/:id')
-  @UseGuards(AuthGuard)
   @HttpCode(204)
   @ApiResponse({
     status: 204,
