@@ -8,12 +8,10 @@ import {
   Post,
   Put,
   Request,
-  UseGuards,
 } from '@nestjs/common';
 import { PayableService } from './payable.service';
 import Payable from '../entity/Payable';
 import PayableCreationDto from './dto/PayableCreationDto';
-import { AuthGuard } from '../auth/auth.guard';
 import { RequestWithUser } from '../types';
 import {
   ApiBearerAuth,
@@ -30,7 +28,6 @@ export class PayableController {
   constructor(private payableService: PayableService) {}
 
   @Post('/')
-  @UseGuards(AuthGuard)
   @HttpCode(201)
   @ApiResponse({
     status: 201,
@@ -53,7 +50,6 @@ export class PayableController {
   }
 
   @Get('/:id')
-  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 200,
     description: 'The record was found.',
@@ -78,7 +74,6 @@ export class PayableController {
   }
 
   @Put('/:id')
-  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 200,
     description: 'The record was updated sucessfully.',
@@ -118,7 +113,6 @@ export class PayableController {
   }
 
   @Delete('/:id')
-  @UseGuards(AuthGuard)
   @HttpCode(204)
   @ApiResponse({
     status: 204,
@@ -149,7 +143,6 @@ export class PayableController {
   }
 
   @Post('/batch')
-  @UseGuards(AuthGuard)
   @HttpCode(200)
   @ApiResponse({
     status: 200,
