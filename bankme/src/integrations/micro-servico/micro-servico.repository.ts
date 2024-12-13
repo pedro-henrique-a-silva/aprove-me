@@ -7,25 +7,13 @@ import Assignor from '../entity/Assignor';
 export default class PayableRepository {
   constructor(private prismaService: PrismaService) {}
 
-  async createPayableRegister(
-    payable: Payable,
-  ): Promise<{ payable: Payable; assignor: Assignor }> {
+  async createPayableRegister(payable: Payable): Promise<Payable> {
     const payableRegister = await this.prismaService.payable.create({
       data: payable.toCreate(),
       include: {
         assignor: true,
       },
     });
-
-    const assignorToReturn = new Assignor();
-
-    assignorToReturn.id = payableRegister.assignor.id;
-    assignorToReturn.document = payableRegister.assignor.document;
-    assignorToReturn.email = payableRegister.assignor.email;
-    assignorToReturn.password = payableRegister.assignor.password;
-    assignorToReturn.phone = payableRegister.assignor.phone;
-    assignorToReturn.name = payableRegister.assignor.name;
-    assignorToReturn.active = payableRegister.assignor.active;
 
     const payableToReturn = new Payable(
       payableRegister.id,
@@ -34,9 +22,26 @@ export default class PayableRepository {
       payableRegister.assignorId,
     );
 
-    return {
-      payable: payableToReturn,
-      assignor: assignorToReturn,
-    };
+    return payableToReturn;
+  }
+
+  async findAssignorById(assignorId: string): Promise<Assignor> {
+    const assignor = await this.prismaService.assignor.findUnique({
+      where: {
+        id: assignorId,
+      },
+    });
+
+    const assignorToReturn = new Assignor();
+
+    assignorToReturn.id = assignor.id;
+    assignorToReturn.document = assignor.document;
+    assignorToReturn.email = assignor.email;
+    assignorToReturn.password = assignor.password;
+    assignorToReturn.phone = assignor.phone;
+    assignorToReturn.name = assignor.name;
+    assignorToReturn.active = assignor.active;
+
+    return assignorToReturn;
   }
 }
