@@ -1,14 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty } from 'class-validator';
+import User from 'src/integrations/entity/User';
 
 export default class AuthLoginDto {
   @IsNotEmpty()
-  @IsEmail()
   @ApiProperty({
-    example: 'email@email.com',
+    example: 'aproveme',
     required: true,
   })
-  email: string;
+  username: string;
 
   @IsNotEmpty()
   @ApiProperty({
@@ -17,8 +17,17 @@ export default class AuthLoginDto {
   })
   password: string;
 
-  constructor(email?: string, password?: string) {
-    this.email = email;
+  constructor(username?: string, password?: string) {
+    this.username = username;
     this.password = password;
+  }
+
+  public toEntity(): User {
+    const userEntity = new User();
+
+    userEntity.username = this.username;
+    userEntity.password = this.password;
+
+    return userEntity;
   }
 }
