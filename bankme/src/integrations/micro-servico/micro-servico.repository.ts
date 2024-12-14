@@ -37,7 +37,6 @@ export default class PayableRepository {
     assignorToReturn.id = assignor.id;
     assignorToReturn.document = assignor.document;
     assignorToReturn.email = assignor.email;
-    assignorToReturn.password = assignor.password;
     assignorToReturn.phone = assignor.phone;
     assignorToReturn.name = assignor.name;
     assignorToReturn.active = assignor.active;
