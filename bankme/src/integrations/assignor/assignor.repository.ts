@@ -17,7 +17,6 @@ export default class AssignorRepository {
     assignorToReturn.id = createdAssignor.id;
     assignorToReturn.document = createdAssignor.document;
     assignorToReturn.email = createdAssignor.email;
-    assignorToReturn.password = createdAssignor.password;
     assignorToReturn.phone = createdAssignor.phone;
     assignorToReturn.name = createdAssignor.name;
     assignorToReturn.active = createdAssignor.active;
@@ -41,7 +40,6 @@ export default class AssignorRepository {
     assignorToReturn.id = assignor.id;
     assignorToReturn.document = assignor.document;
     assignorToReturn.email = assignor.email;
-    assignorToReturn.password = assignor.password;
     assignorToReturn.phone = assignor.phone;
     assignorToReturn.name = assignor.name;
     assignorToReturn.active = assignor.active;
@@ -65,7 +63,6 @@ export default class AssignorRepository {
     assignorToReturn.id = assignor.id;
     assignorToReturn.document = assignor.document;
     assignorToReturn.email = assignor.email;
-    assignorToReturn.password = assignor.password;
     assignorToReturn.phone = assignor.phone;
     assignorToReturn.name = assignor.name;
     assignorToReturn.active = assignor.active;
@@ -95,12 +92,28 @@ export default class AssignorRepository {
     assignorToReturn.id = updatedAssignor.id;
     assignorToReturn.document = updatedAssignor.document;
     assignorToReturn.email = updatedAssignor.email;
-    assignorToReturn.password = updatedAssignor.password;
     assignorToReturn.phone = updatedAssignor.phone;
     assignorToReturn.name = updatedAssignor.name;
     assignorToReturn.active = updatedAssignor.active;
 
     return assignorToReturn;
+  }
+
+  async findAssignors(): Promise<Assignor[]> {
+    const assignors = await this.prismaService.assignor.findMany();
+
+    return assignors.map((assignor) => {
+      const assignorToReturn = new Assignor();
+
+      assignorToReturn.id = assignor.id;
+      assignorToReturn.document = assignor.document;
+      assignorToReturn.email = assignor.email;
+      assignorToReturn.phone = assignor.phone;
+      assignorToReturn.name = assignor.name;
+      assignorToReturn.active = assignor.active;
+
+      return assignorToReturn;
+    });
   }
 
   async deleteAssignorById(
@@ -125,7 +138,6 @@ export default class AssignorRepository {
     assignorToReturn.id = deletedAssignor.id;
     assignorToReturn.document = deletedAssignor.document;
     assignorToReturn.email = deletedAssignor.email;
-    assignorToReturn.password = deletedAssignor.password;
     assignorToReturn.phone = deletedAssignor.phone;
     assignorToReturn.name = deletedAssignor.name;
     assignorToReturn.active = deletedAssignor.active;
@@ -149,7 +161,6 @@ export default class AssignorRepository {
     assignorToReturn.id = user.id;
     assignorToReturn.document = user.document;
     assignorToReturn.email = user.email;
-    assignorToReturn.password = user.password;
     assignorToReturn.phone = user.phone;
     assignorToReturn.name = user.name;
     assignorToReturn.active = user.active;
