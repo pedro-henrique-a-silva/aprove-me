@@ -51,30 +51,19 @@ export class AssignorController {
     return responseAssignor;
   }
 
-  @Get('/my-info')
+  @Get()
   @ApiResponse({
     status: 200,
-    description: 'The record was found.',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'The record was not found.',
+    description: 'The records were found.',
   })
   @ApiResponse({
     status: 401,
     description: 'Unauthorizeds',
   })
-  @ApiParam({
-    name: 'id',
-    type: String,
-    description: 'Assignor id',
-  })
-  async findAssignorSelfInfor(@Req() req: Request) {
-    const {id} = req.user;
-    console.log(req.user.id);
-    const assignor = await this.assignorService.findAssignorById(id);
+  async findAssignors() {
+    const assignors = await this.assignorService.findAssignors();
 
-    return assignor;
+    return assignors;
   }
 
   @Get('/:id')
