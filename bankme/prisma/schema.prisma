@@ -42,6 +42,7 @@ model Payable {
   emissionDate  DateTime @map("emission_date")
   assignor Assignor @relation(fields: [assignorId], references: [id], onDelete: Cascade)
   assignorId String @map("assignor_id")
+  active   Boolean @default(true)
 
   @@map("payables")
 }
