@@ -35,8 +35,8 @@ export class PayableService {
     return PayableDto.fromEntity(createdPayable);
   }
 
-  async findAllPayables(assignorId) {
-    const payables = await this.payableRepository.findAllPayables(assignorId);
+  async findAllPayables() {
+    const payables = await this.payableRepository.findAllPayables();
 
     return payables.map((payable) => PayableDto.fromEntity(payable));
   }
