@@ -15,15 +15,34 @@ function ListPayables() {
     router.push(`/payable/${id}`);
   }
 
-  useEffect(() => {
-    async function data() {
-      const token = getTokenFromLocalStore('token');
-      const assignorsResponse = await connection.get<Payable[]>("/integrations/payable", {
+  const handleDeleteButtonClick = async (id: string) => {
+    const token = getTokenFromLocalStore('token');
+    try {
+      await connection.delete<Payable[]>(`/integrations/payable/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      setPayable(assignorsResponse.data);
+
+      setPayable(payables.filter((payable) => payable.id !== id));
+
+    } catch (error: any) {
+      if (error.response.status !== 200) {
+        alert('Error on delete');
+        return;
+      }
+    }
+  }
+
+  useEffect(() => {
+    async function data() {
+      const token = getTokenFromLocalStore('token');
+      const payableResponse = await connection.get<Payable[]>("/integrations/payable", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setPayable(payableResponse.data);
     }
     data();
   }, []);
@@ -44,12 +63,18 @@ function ListPayables() {
             <td className='text-center px-4'>{payable.id}</td>
             <td className='text-center px-4'>{payable.value}</td>
             <td className='text-center px-4'>{formatDate(payable.emissionDate)}</td>
-            <td className='text-center px-4'>
+            <td className='flex justify-center items-center gap-2 text-center px-4'>
               <button
                 onClick={() => handleDetailsButtonClick(payable.id)}
                 className="px-4 py-1 rounded-md bg-sky-500 hover:bg-sky-700 hover:text-cyan-50" 
               >
                 Detalhes
+              </button>
+              <button
+                onClick={() => handleDeleteButtonClick(payable.id)}
+                className="px-4 py-1 font-semibold rounded-md bg-red-300 hover:bg-red-400 hover:text-cyan-50" 
+              >
+                X
               </button>
             </td>
           </tr>
