@@ -14,7 +14,6 @@ const active = true;
 export const assignorToCreationMock = new AssignorCreationDto(
   document,
   email,
-  password,
   phone,
   name,
 );
@@ -23,7 +22,6 @@ export const assignorCreatedMock = new AssignorDto(
   uuid,
   document,
   email,
-  password,
   phone,
   name,
   active,
@@ -33,7 +31,6 @@ export const assignorEntityMock = new Assignor(
   uuid,
   document,
   email,
-  password,
   phone,
   name,
   active,
