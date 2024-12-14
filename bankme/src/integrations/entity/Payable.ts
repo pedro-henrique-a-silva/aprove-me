@@ -18,7 +18,7 @@ export default class Payable implements IPayable {
   toCreate() {
     return {
       id: this.id,
-      value: this.value,
+      value: Number(this.value),
       emissionDate: new Date(this.emissionDate),
       assignorId: this.assignorId,
     };
