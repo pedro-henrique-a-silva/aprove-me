@@ -23,8 +23,6 @@ export class AssignorService {
       throw new ConflictException('Assignor already exists.');
     }
 
-    assignor.password = await bcrypt.hash(assignor.password, 10);
-
     const createdAssignor =
       await this.assignorRepository.createAssignorRegister(assignor);
 
@@ -45,9 +43,6 @@ export class AssignorService {
     id: string,
     assignor: Assignor,
   ): Promise<AssignorDto> {
-    if (assignor.password) {
-      assignor.password = await bcrypt.hash(assignor.password, 10);
-    }
 
     const updatedAssignor = await this.assignorRepository.updateAssignorById(
       id,
@@ -59,6 +54,12 @@ export class AssignorService {
     }
 
     return AssignorDto.fromEntity(updatedAssignor);
+  }
+
+  async findAssignors() {
+    const assignors = await this.assignorRepository.findAssignors();
+
+    return assignors.map((assignor) => AssignorDto.fromEntity(assignor));
   }
 
   async deleteAssignorById(id: string): Promise<void> {
