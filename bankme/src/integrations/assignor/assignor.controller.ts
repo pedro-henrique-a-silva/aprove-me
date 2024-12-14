@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  Req,
 } from '@nestjs/common';
 import { AssignorService } from './assignor.service';
 import Assignor from '../entity/Assignor';
@@ -19,6 +20,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Public } from '../shared/custom-decorators/is-public.decorator';
+import { Request } from 'express';
 
 @Controller('/integrations/assignor')
 @ApiBearerAuth()
@@ -49,6 +51,32 @@ export class AssignorController {
     return responseAssignor;
   }
 
+  @Get('/my-info')
+  @ApiResponse({
+    status: 200,
+    description: 'The record was found.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'The record was not found.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorizeds',
+  })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'Assignor id',
+  })
+  async findAssignorSelfInfor(@Req() req: Request) {
+    const {id} = req.user;
+    console.log(req.user.id);
+    const assignor = await this.assignorService.findAssignorById(id);
+
+    return assignor;
+  }
+
   @Get('/:id')
   @ApiResponse({
     status: 200,
@@ -72,6 +100,8 @@ export class AssignorController {
 
     return assignor;
   }
+
+ 
 
   @Put('/:id')
   @ApiResponse({
