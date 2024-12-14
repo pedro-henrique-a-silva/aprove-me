@@ -19,12 +19,8 @@ export default class PayableRepository {
     );
   }
 
-  async findAllPayables(assignorId: string): Promise<Payable[]> {
-    const payables = await this.prismaService.payable.findMany({
-      where: {
-        assignorId,
-      },
-    });
+  async findAllPayables(): Promise<Payable[]> {
+    const payables = await this.prismaService.payable.findMany();
 
     return payables.map(
       (payable) =>
