@@ -19,6 +19,24 @@ export default class PayableRepository {
     );
   }
 
+  async findAllPayables(assignorId: string): Promise<Payable[]> {
+    const payables = await this.prismaService.payable.findMany({
+      where: {
+        assignorId,
+      },
+    });
+
+    return payables.map(
+      (payable) =>
+        new Payable(
+          payable.id,
+          payable.value,
+          payable.emissionDate,
+          payable.assignorId,
+        ),
+    );
+  }
+
   async findPayableById(id: string): Promise<Payable | null> {
     const payable = await this.prismaService.payable.findUnique({
       where: {
