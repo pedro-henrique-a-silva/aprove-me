@@ -19,13 +19,6 @@ export default class AssignorCreationDto {
   email: string;
 
   @ApiProperty({
-    example: 'password123',
-    required: true,
-  })
-  @IsNotEmpty()
-  password: string;
-
-  @ApiProperty({
     example: '99 99999-9999',
     required: true,
   })
@@ -42,13 +35,11 @@ export default class AssignorCreationDto {
   constructor(
     document?: string,
     email?: string,
-    password?: string,
     phone?: string,
     name?: string,
   ) {
     this.document = document;
     this.email = email;
-    this.password = password;
     this.phone = phone;
     this.name = name;
   }
@@ -58,7 +49,6 @@ export default class AssignorCreationDto {
 
     payableEntity.document = this.document;
     payableEntity.email = this.email;
-    payableEntity.password = this.password;
     payableEntity.name = this.name;
     payableEntity.phone = this.phone;
 
