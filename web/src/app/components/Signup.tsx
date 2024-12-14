@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react'
 import { signupSchema } from '../schemas/signup-schema';
 import { ZodError } from 'zod';
 import { connection } from '../utils/api-connection';
-import { useRouter } from 'next/navigation';
 
 type SignupProps = {
   setIsLogin: (isLogin: boolean) => void;
@@ -27,8 +26,6 @@ function Signup(props: SignupProps) {
     try {
       await connection.post('/integrations/assignor', {
         ...data,
-        name: data.nome,
-        document: data.cpf,
       })
 
       setTimeout(() => {
@@ -56,20 +53,8 @@ function Signup(props: SignupProps) {
     <>
     <form onSubmit={handleSubmit} className='flex flex-col justify-center w-full mt-10'>
         <div className='flex flex-col pb-1'>
-          <label htmlFor="">Nome</label>
-          <input className='border shadow' id='nome' name='nome' type="text" />
-        </div>
-        <div className='flex flex-col pb-1'>
-          <label htmlFor="">CPF:</label>
-          <input className='border shadow' id='cpf' name='cpf' type="text" />
-        </div>
-        <div className='flex flex-col pb-1'>
-          <label htmlFor="">Email:</label>
-          <input className='border shadow' id='email' name='email' type="text" />
-        </div>
-        <div className='flex flex-col pb-1'>
-          <label htmlFor="">Phone:</label>
-          <input className='border shadow' id='phone' name='phone' type="text" />
+          <label htmlFor="">Username</label>
+          <input className='border shadow' id='username' name='username' type="text" />
         </div>
         <div className='flex flex-col pb-1'>
           <label htmlFor="">Password</label>
