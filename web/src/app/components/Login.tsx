@@ -55,12 +55,12 @@ function Login() {
     <>
     <form onSubmit={handleSubmit} className='flex flex-col justify-center w-full mt-10'>
         <div className='flex flex-col pb-1'>
-          <label htmlFor="">Email</label>
-          <input className='border shadow' id='email' name='email' type="text" />
+          <label htmlFor="">Username</label>
+          <input className='border shadow p-1' id='username' name='username' type="text" />
         </div>
         <div className='flex flex-col pb-1'>
           <label htmlFor="">Password</label>
-          <input className='border shadow' id='password' name='password' type="password" />
+          <input className='border shadow p-1' id='password' name='password' type="password" />
         </div>
         <div className='flex flex-col justify-center pb-1 mt-2 mb-2'>
           <button 
