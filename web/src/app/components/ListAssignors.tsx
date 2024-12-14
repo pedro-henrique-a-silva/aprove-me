@@ -14,6 +14,25 @@ function ListAssignor() {
     router.push(`/assignor/${id}`);
   }
 
+  const handleDeleteButtonClick = async (id: string) => {
+    const token = getTokenFromLocalStore('token');
+    try {
+      await connection.delete<Assignor>(`/integrations/assignor/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setAssignor(assignor.filter((a) => a.id !== id));
+
+    } catch (error: any) {
+      if (error.response.status !== 200) {
+        alert('Error on delete');
+        return;
+      }
+    }
+  }
+
   useEffect(() => {
     async function data() {
       const token = getTokenFromLocalStore('token');
@@ -43,12 +62,18 @@ function ListAssignor() {
             <td className='text-center px-4'>{assignor.id}</td>
             <td className='text-center px-4'>{assignor.name}</td>
             <td className='text-center px-4'>{assignor.document}</td>
-            <td className='text-center px-4'>
+            <td className='flex justify-center items-center gap-2 text-center px-4'>
               <button
                 onClick={() => handleDetailsButtonClick(assignor.id)}
                 className="px-4 py-1 rounded-md bg-sky-500 hover:bg-sky-700 hover:text-cyan-50" 
               >
                 Detalhes
+              </button>
+              <button
+                onClick={() => handleDeleteButtonClick(assignor.id)}
+                className="px-4 py-1 font-semibold rounded-md bg-red-300 hover:bg-red-400 hover:text-cyan-50" 
+              >
+                X
               </button>
             </td>
           </tr>
