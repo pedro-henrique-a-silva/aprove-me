@@ -1,20 +1,21 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { AssignorService } from '../assignor/assignor.service';
+import UserRepository from './user.repository';
+import User from '../entity/User';
 
 @Injectable()
 export class AuthService {
-  private assignorService: AssignorService;
+  private userRepository: UserRepository;
   private jwtService: JwtService;
 
-  constructor(assignorService: AssignorService, jwtService: JwtService) {
-    this.assignorService = assignorService;
+  constructor(userRepository: UserRepository, jwtService: JwtService) {
+    this.userRepository = userRepository;
     this.jwtService = jwtService;
   }
 
-  async login(email: string, password: string) {
-    const user = await this.assignorService.findAssignorByEmail(email);
+  async login(username: string, password: string) {
+    const user = await this.userRepository.findByUsername(username);
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
@@ -22,9 +23,17 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    const payload = { sub: user.email, username: user.name, id: user.id };
+    const payload = { username: user.username, id: user.id };
     return {
       token: await this.jwtService.signAsync(payload),
     };
+  }
+
+  async signup(user: User) {
+    const hashedPassword = await bcrypt.hash(user.password, 10);
+
+    user.password = hashedPassword;
+
+    await this.userRepository.create(user);
   }
 }
