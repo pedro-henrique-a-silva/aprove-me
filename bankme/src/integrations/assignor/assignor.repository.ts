@@ -100,7 +100,11 @@ export default class AssignorRepository {
   }
 
   async findAssignors(): Promise<Assignor[]> {
-    const assignors = await this.prismaService.assignor.findMany();
+    const assignors = await this.prismaService.assignor.findMany({
+      where: {
+        active: true,
+      }
+    });
 
     return assignors.map((assignor) => {
       const assignorToReturn = new Assignor();
