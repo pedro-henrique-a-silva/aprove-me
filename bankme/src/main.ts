@@ -25,6 +25,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('documentation', app, document);
 
+  app.enableCors()
   app.connectMicroservice({
     transport: Transport.RMQ,
     options: {
