@@ -7,7 +7,7 @@ import {
   Param,
   Post,
   Put,
-  Request,
+  Req,
 } from '@nestjs/common';
 import { PayableService } from './payable.service';
 import Payable from '../entity/Payable';
@@ -20,6 +20,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Request } from 'express';
 
 @Controller('integrations/payable')
 @ApiBearerAuth()
@@ -47,6 +48,22 @@ export class PayableController {
       await this.payableService.createPayableRegister(payable);
 
     return responsePayable;
+  }
+
+  @Get()
+  @ApiResponse({
+    status: 200,
+    description: 'The records were found.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorizeds',
+  })
+  async findAllPayables(@Req() req: Request) {
+    const {id} = req.user
+    const responsePayables = await this.payableService.findAllPayables(id);
+
+    return responsePayables;
   }
 
   @Get('/:id')
@@ -96,7 +113,7 @@ export class PayableController {
     description: 'Json structure for user object',
   })
   async updatePayableById(
-    @Request() req: RequestWithUser,
+    @Req() req: Request,
     @Param('id') id: string,
     @Body() payableBody: PayableCreationDto,
   ) {
@@ -132,7 +149,7 @@ export class PayableController {
     description: 'Assignor id',
   })
   async deletePayableById(
-    @Request() req: RequestWithUser,
+    @Req() req: Request,
     @Param('id') id: string,
   ) {
     const { user } = req;
@@ -153,7 +170,7 @@ export class PayableController {
     description: 'Unauthorized, invalid jwt Token.',
   })
   async processBatch(
-    @Request() req: RequestWithUser,
+    @Req() req: Request,
     @Body() batchData: PayableCreationDto[],
   ) {
     const { user } = req;
