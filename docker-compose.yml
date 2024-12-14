@@ -17,9 +17,9 @@ services:
       timeout: 10s
       retries: 5
 
-  bankme-api:
+  bankme_api:
     build: ./bankme
-    container_name: bankme-api
+    container_name: bankme_api
     tty: true
     stdin_open: true
     command: run start:dev
@@ -29,9 +29,30 @@ services:
       - ./bankme/src:/app/src
       - ./bankme/test:/app/test
       - ./bankme/prisma:/app/prisma
-
     ports:
-      - 3000:3000
+      - 3001:3001
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001"]
+      timeout: 10s
+      retries: 5
 
     env_file:
      - ./.env
+
+  web:
+    container_name: 'bankme_web'
+    build: ./web
+    command: run dev
+    env_file:
+      - ./.env
+    ports:
+      - 3000:3000
+    volumes:
+      - ./web/src:/app/src
+    depends_on:
+      - bankme_api
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      timeout: 10s
+      retries: 5
