@@ -20,7 +20,11 @@ export default class PayableRepository {
   }
 
   async findAllPayables(): Promise<Payable[]> {
-    const payables = await this.prismaService.payable.findMany();
+    const payables = await this.prismaService.payable.findMany({
+      where: {
+        active: true,
+      }
+    });
 
     return payables.map(
       (payable) =>
@@ -72,10 +76,13 @@ export default class PayableRepository {
   }
 
   async deletePayableById(id: string): Promise<void> {
-    await this.prismaService.payable.delete({
+    await this.prismaService.payable.update({
       where: {
         id,
       },
+      data: {
+        active: false,
+      }
     });
   }
 }
