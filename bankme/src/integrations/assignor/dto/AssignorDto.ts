@@ -4,7 +4,6 @@ export default class AssignorDto {
   id: string;
   document: string;
   email: string;
-  password: string;
   phone: string;
   name: string;
   active: boolean;
@@ -13,7 +12,6 @@ export default class AssignorDto {
     id?: string,
     document?: string,
     email?: string,
-    password?: string,
     phone?: string,
     name?: string,
     active?: boolean,
@@ -21,7 +19,6 @@ export default class AssignorDto {
     this.id = id;
     this.document = document;
     this.email = email;
-    this.password = password;
     this.phone = phone;
     this.name = name;
     this.active = active;
@@ -33,7 +30,6 @@ export default class AssignorDto {
     assignorDto.id = assignor.id;
     assignorDto.document = assignor.document;
     assignorDto.email = assignor.email;
-    assignorDto.password = assignor.password;
     assignorDto.name = assignor.name;
     assignorDto.phone = assignor.phone;
 
