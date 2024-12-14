@@ -88,6 +88,7 @@ export default class Assignor {
       password: this.password,
       phone: this.phone,
       name: this.name,
+      id: this.id,
     };
   }
 }
