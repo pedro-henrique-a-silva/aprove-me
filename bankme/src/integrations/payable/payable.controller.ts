@@ -59,9 +59,8 @@ export class PayableController {
     status: 401,
     description: 'Unauthorizeds',
   })
-  async findAllPayables(@Req() req: Request) {
-    const {id} = req.user
-    const responsePayables = await this.payableService.findAllPayables(id);
+  async findAllPayables() {
+    const responsePayables = await this.payableService.findAllPayables();
 
     return responsePayables;
   }
