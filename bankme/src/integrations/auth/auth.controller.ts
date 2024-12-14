@@ -29,7 +29,26 @@ export class AuthController {
     description: 'Json structure for user object',
   })
   async login(@Body() body: AuthLoginDto) {
-    const token = await this.authService.login(body.email, body.password);
+    const token = await this.authService.login(body.username, body.password);
     return token;
+  }
+
+  @Post('signup')
+  @Public()
+  @HttpCode(201)
+  @ApiResponse({
+    status: 201,
+    description: 'User created successfully.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad request.',
+  })
+  @ApiBody({
+    type: AuthLoginDto,
+    description: 'Json structure for user object',
+  })
+  async signup(@Body() body: AuthLoginDto) {
+    await this.authService.signup(body.toEntity());
   }
 }
