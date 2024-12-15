@@ -57,6 +57,10 @@ Caso queira visualizar os logs dos containers basta utilizar:
     docker logs -f bankme_web
   ```
 
+## Executando os testes
+
+Na pasta raiz do projeto basta executar o comando `npm run test:back` para executar os testes do backend. Ou você pode entrar na pasta do backend e executar o comando `npm run test`
+
 ## Aplicação Frontend
 
 Para acessar a aplicação frontend use o endpoint `http://localhost:3000`, já existe um login cadastrado através do processo de seeding.
@@ -73,6 +77,8 @@ password: aproveme
 A api backend foi desenvolvida utilizando o Framework nestjs, utilizando Prisma e sqlite para o banco de dados.
 foi feita uma integração com um serviço de email gratuito chamado **resend** que pode ser utilizado para os testes.
 Mais desde que tenha as credenciais SMTP, e possivel utilizar qualquer outro serviço
+
+A aplicação frontend foi desenvolvida utilizando Nextjs como tecnologia principal e tailwind para estilização dos componentes
 
 ## Utilização
 
