@@ -8,7 +8,6 @@ import {
 import Assignor from '../entity/Assignor';
 import AssignorRepository from './assignor.repository';
 import AssignorDto from './dto/AssignorDto';
-import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AssignorService {
@@ -43,7 +42,6 @@ export class AssignorService {
     id: string,
     assignor: Assignor,
   ): Promise<AssignorDto> {
-
     const updatedAssignor = await this.assignorRepository.updateAssignorById(
       id,
       assignor.toCreate(),
