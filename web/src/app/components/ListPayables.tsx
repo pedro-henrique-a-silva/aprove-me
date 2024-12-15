@@ -15,6 +15,10 @@ function ListPayables() {
     router.push(`/payable/${id}`);
   }
 
+  const handleEditButtonClick = (id: string) => {
+    router.push(`/payable/${id}/edit`);
+  }
+
   const handleDeleteButtonClick = async (id: string) => {
     const token = getTokenFromLocalStore('token');
     try {
@@ -69,6 +73,12 @@ function ListPayables() {
                 className="px-4 py-1 rounded-md bg-sky-500 hover:bg-sky-700 hover:text-cyan-50" 
               >
                 Detalhes
+              </button>
+              <button
+                onClick={() => handleEditButtonClick(payable.id)}
+                className="px-4 py-1 rounded-md bg-sky-500 hover:bg-sky-700 hover:text-cyan-50" 
+              >
+                Editar
               </button>
               <button
                 onClick={() => handleDeleteButtonClick(payable.id)}
