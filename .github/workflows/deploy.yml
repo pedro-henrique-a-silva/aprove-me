@@ -20,21 +20,20 @@ jobs:
 
       - name: Roda os testes do backend
         run: npm run test:back
-
-      - name: Deploy do amazon
+     
+      - name: Setup SSH
         run: |
-          echo "${{ secrets.AWS_EC2_KEY }}" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${{ secrets.AWS_EC2_USER }}@${{ secrets.AWS_EC2_HOST }} '
-            cd ~/apps && touch consegui.txt'
-        
+          mkdir -p ~/.ssh
+          echo "${{ secrets.AWS_EC2_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.AWS_EC2_HOST }} >> ~/.ssh/known_hosts
 
-      # - name: Setup SSH
-      #   run: |
-      #     mkdir -p ~/.ssh
-      #     echo "${{ secrets.AWS_EC2_KEY }}" > ~/.ssh/id_rsa
-      #     chmod 600 ~/.ssh/id_rsa
-      #     ssh-keyscan -H ${{ secrets.AWS_EC2_HOST }} >> ~/.ssh/known_hosts
+      - name: Transferindo arquivos para EC2
+        run: |
+          scp -r . ${{ secrets.AWS_EC2_USER }}@${{ secrets.AWS_EC2_HOST }}:/home/${{ secrets.AWS_EC2_USER }}/app
 
-      # - name: Transferindo arquivos para EC2
+      # - name: Deploy do amazon
       #   run: |
-      #     scp -r . ${{ secrets.AWS_EC2_USER }}@${{ secrets.AWS_EC2_HOST }}:/home/${{ secrets.AWS_EC2_USER }}/app
+      #     echo "${{ secrets.AWS_EC2_KEY }}" > private_key && chmod 600 private_key
+      #     ssh -o StrictHostKeyChecking=no -i private_key ${{ secrets.AWS_EC2_USER }}@${{ secrets.AWS_EC2_HOST }} '
+      #       cd ~/apps && touch consegui.txt'
