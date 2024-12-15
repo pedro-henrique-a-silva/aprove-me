@@ -1,0 +1,19 @@
+name: Deploy to EC2 with Docker
+on:
+  push:
+    branches:
+        pedro-henrique-a-silva-bankme-2024
+jobs:
+  deploy:
+    name: Deploy to EC2
+    runs-on: ubuntu-latest
+    steps:
+      name: Checkout the files
+      uses: actions/checkout@v3
+
+    steps:
+      name: Teste Backend
+      uses: actions/setup-node@v2
+      with:
+        node-version: '18'
+      run: npm run test:backend
