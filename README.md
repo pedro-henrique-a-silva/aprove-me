@@ -80,6 +80,10 @@ Mais desde que tenha as credenciais SMTP, e possivel utilizar qualquer outro ser
 
 A aplicação frontend foi desenvolvida utilizando Nextjs como tecnologia principal e tailwind para estilização dos componentes
 
+## Deploy
+
+Existe uma action do github configurada para esse repositório, ela pode ser utiliza como exemplo para que você construa seu proprio pipeline de deploy. Nesse pipeline é utilizado a Amazon Ec2 e docker para fazer o deploy
+
 ## Utilização
 
 Acessando a url `http://localhost:3001/documentation` você terá uma documentação completa sobre todos os caminhos da API e como utiliza-los. 
