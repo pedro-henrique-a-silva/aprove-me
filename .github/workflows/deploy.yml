@@ -32,9 +32,13 @@ jobs:
         run: |
           ssh -i ~/.ssh/id_rsa ${{ secrets.AWS_EC2_USER }}@${{ secrets.AWS_EC2_HOST }} "cd ~/apps && echo 'SSH is working' >> consegui.txt"
 
+      - name: Compactar arquivos
+        run: |
+          tar -czf app.tar.gz .
+
       - name: Transferindo arquivos para EC2
         run: |
-          scp  -i ~/.ssh/id_rsa -r . ${{ secrets.AWS_EC2_USER }}@${{ secrets.AWS_EC2_HOST }}:/home/${{ secrets.AWS_EC2_USER }}/apps
+          scp  -i ~/.ssh/id_rsa -r app.tar.gz ${{ secrets.AWS_EC2_USER }}@${{ secrets.AWS_EC2_HOST }}:/home/${{ secrets.AWS_EC2_USER }}/apps
 
       # - name: Deploy do amazon
       #   run: |
