@@ -1,14 +1,28 @@
 "use client"
-import React, { useEffect, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import { connection } from '../utils/api-connection';
 import { getTokenFromLocalStore } from '../utils/local-store-helper';
 import { ZodError } from 'zod';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { registerAssignorSchema } from '../schemas/create-assignor';
+import { Assignor } from '../types/assignor';
 
-function CreateAssignor() {
+type CreateAssignorProps = {
+  isEditing?: boolean;
+}
+
+function CreateAssignor(props: CreateAssignorProps) {
+  const { isEditing } = props;
   const router = useRouter();
   const [error, setError] = useState<string[] | null>(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    document: '',
+    phone: '',
+  });
+  const params = useParams();
+  const { id } = params;
 
   async function handleSubmit (e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -24,9 +38,11 @@ function CreateAssignor() {
     const token = getTokenFromLocalStore('token');
 
     try {
-      const response = await connection.post('/integrations/assignor', {
+      const url = isEditing ? `/integrations/assignor/${id}` : '/integrations/assignor'
+      const axioMethod = isEditing ? connection.put : connection.post;
+
+      const response = await axioMethod(url, {
         ...data,
-        document: data.cpf,
       },
       {
         headers: {
@@ -48,6 +64,14 @@ function CreateAssignor() {
     
   }
 
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  }
+
   useEffect(() => {
     if (error) {
       setTimeout(() => {
@@ -56,6 +80,29 @@ function CreateAssignor() {
     }
   }, [error])
 
+  useEffect(() => {
+    async function data() {
+      const token = getTokenFromLocalStore('token');
+      const assignorsResponse = await connection.get<Assignor>(`/integrations/assignor/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setFormData({
+        name: assignorsResponse.data.name,
+        email: assignorsResponse.data.email,
+        document: assignorsResponse.data.document,
+        phone: assignorsResponse.data.phone,
+      });
+    }
+    
+
+    if (isEditing) {
+      data();
+    }
+  }, [isEditing])
+
 
   return (
     <>
@@ -63,37 +110,45 @@ function CreateAssignor() {
         <div className='flex flex-col pb-1'>
           <label htmlFor="">Nome:</label>
           <input
+            onChange={(e) => handleInputChange(e)}
             placeholder='100.00'
             className='border shadow p-1' 
             id='name' 
-            name='name' 
+            name='name'
+            value={formData.name}
             type="text" />
         </div>
         <div className='flex flex-col pb-1'>
           <label htmlFor="">CPF:</label>
           <input
+            onChange={(e) => handleInputChange(e)}
             placeholder='00000000000'
             className='border shadow p-1' 
-            id='cpf' 
-            name='cpf' 
+            id='document' 
+            name='document'
+            value={formData.document}
             type="text" />
         </div>
         <div className='flex flex-col pb-1'>
           <label htmlFor="">E-mail:</label>
           <input
+            onChange={(e) => handleInputChange(e)}
             placeholder='email@email.com'
             className='border shadow p-1' 
             id='email' 
             name='email' 
+            value={formData.email}
             type="text" />
         </div>
         <div className='flex flex-col pb-1'>
           <label htmlFor="">E-mail:</label>
           <input
+            onChange={(e) => handleInputChange(e)}
             placeholder='00000000000'
             className='border shadow p-1' 
             id='phone' 
             name='phone' 
+            value={formData.phone}
             type="text" />
         </div>
 
