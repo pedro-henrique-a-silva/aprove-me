@@ -10,7 +10,6 @@ jobs:
       name: Checkout the files
       uses: actions/checkout@v3
 
-    steps:
       name: Teste Backend
       uses: actions/setup-node@v2
       with:
