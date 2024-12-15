@@ -7,6 +7,7 @@
     "install:front": "cd ./web && npm install",
     "install:back": "cd ./bankme && npm install",
     "install:apps": "npm run install:front && npm run install:back",
+    "build:apps": "npm run install:front && npm run install:back",
     "start:front": "cd ./web && npm run dev",
     "start:back": "cd ./bankme && npm run start:dev",
     "test:back": "cd ./bankme && npm run test"
