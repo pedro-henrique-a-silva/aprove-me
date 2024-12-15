@@ -1,8 +1,7 @@
 name: Deploy to EC2 with Docker
 on:
   push:
-    branches:
-        pedro-henrique-a-silva-bankme-2024
+    branches: [pedro-henrique-a-silva-bankme-2024]
 jobs:
   deploy:
     name: Deploy to EC2
