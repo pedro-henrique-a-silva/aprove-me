@@ -1,0 +1,17 @@
+{
+  "name": "aprove-me",
+  "version": "1.0.0",
+  "description": "<p align=\"center\">   <img src=\"./assets/logo-bankme.png\" alt=\"Logo Bankme\" width=\"91\" height=\"108\"> </p> <h1 align=\"center\">   Aprove-me </h1>",
+  "main": "index.js",
+  "scripts": {
+    "install:front": "cd ./web && npm install",
+    "install:back": "cd ./bankme && npm install",
+    "install:apps": "npm run install:front && npm run install:back",
+    "start:front": "cd ./web && npm run dev",
+    "start:back": "cd ./bankme && npm run start:dev",
+    "test:back": "cd ./bankme && npm run test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
