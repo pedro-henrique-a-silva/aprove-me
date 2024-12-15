@@ -22,7 +22,7 @@ services:
     container_name: bankme_api
     tty: true
     stdin_open: true
-    command: run start:dev
+    command: run start
 
     working_dir: /app
     volumes:
@@ -43,7 +43,7 @@ services:
   web:
     container_name: 'bankme_web'
     build: ./web
-    command: run dev
+    command: run start
     env_file:
       - ./web/.env
     ports:
