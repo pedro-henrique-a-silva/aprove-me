@@ -12,18 +12,19 @@
 
 1. **Instalar o Docker**: Certifique-se de que você tem o Docker e o Docker Compose instalados na sua máquina. [Instruções de instalação do Docker](https://docs.docker.com/get-docker/)
 
-2. **Clonar o Repositório**: Clone o repositório do projeto para a sua máquina local.
+2. **Clonar o Repositório**: Clone o repositório do projeto na branch correta para a sua máquina local.
 
     ```bash
-    git clone https://github.com/pedro-henrique-a-silva/aprove-me
-    git checkout pedro-henrique-a-silva-bankme
+    git clone -b pedro-henrique-a-silva-bankme-2024 git@github.com:pedro-henrique-a-silva/aprove-me.git
+
+    cd aprove-me
     ```
 
 ## Iniciando o Projeto
 
 O projeto ira rodar em containers do Docker todas as dependencias serão instaladas ao rodar o comando para iniciar os containers.
 
-> Atenção: É necessário criar um arquivo `.env` na raiz do projeto com algumas variáveis necessarias para rodar a aplicação, siga o modelo do `.env.exemplo`
+> Atenção: Dentro da pasta do backend e do frontend existem arquivos `example.env`, é necessário criar um arquivo `.env` na raiz de cada projeto com as variáveis necessarias para rodar a aplicação, siga o modelo do `.env.exemplo`
 
 ## Rodando o Projeto
 
@@ -34,45 +35,45 @@ O projeto ira rodar em containers do Docker todas as dependencias serão instala
     docker-compose up -d --build
     ```
 
-    Isso vai iniciar a aplicação da api que irá rodar na porta 3000 `http://localhost:3000`.
+    Isso vai iniciar a aplicação da api que irá rodar na porta 3001 `http://localhost:3001`.
 
-    Esse comando também incia um container rodando um banco de dados MySQL, um container rodando o RabbitMQ para gerenciar as filas de processamento e um rodando um micro-serviço para consumir as filas para processamento.
+    E vai iniciar a aplicação frontend na porta 3000 `http://localhost:3000`
 
-2. **Acessar o Contêiner**: O processo de iniciar a aplicação e banco de dados pode demorar um pouco então e recomendavel que se verifique se a api e o micro-serviço que consome as filas estão saudaveis.
+    Esse comando também incia um container rodando um banco o servidor do rabbitMQ, um container rodando o RabbitMQ para gerenciar as filas de processamento e um rodando um micro-serviço para consumir as filas para processamento.
 
-### Verificando saúde da API
+2. **Acessar o Contêiner**:
 
-Basta execuar o comando
-
-  ```bash
-    docker logs -f bankme-api
-  ```
-    
-espere até que veja isso nos logs:
-
- ```bash
-[Nest] 294  - 06/03/2024, 3:20:14 PM     LOG [NestApplication] Nest application successfully started
-  ```
-
-### Verificando saúde do Micro-serviço
-  
-  Basta executar o comando
+Caso queira visualizar os logs dos containers basta utilizar:
+ 
+  Para a api:
 
   ```bash
-  docker logs -f bankme-consumer
+    docker logs -f bankme_api
   ```
 
-espere até que veja isso nos logs:
+  Para o frontend: 
 
- ```bash
-[Nest] 97  - 06/03/2024, 3:20:10 PM     LOG [NestMicroservice] Nest microservice successfully started
+  ```bash
+    docker logs -f bankme_web
   ```
 
+## Aplicação Frontend
+
+Para acessar a aplicação frontend use o endpoint `http://localhost:3000`, já existe um login cadastrado através do processo de seeding.
+
+Para fazer login na aplicação utilize: 
+
+```
+username: aproveme
+password: aproveme
+```
 
 ## Desenvolvimento
 
-Tanto a API quanto o micro-serviço foram desenvolvidos utilizando o framework **Nestjs**, além disso foi utilizado o ORM Prisma para o banco de dados e um servidor RabbitMQ adicionar o serviço de mensageria ao projeto
+A api backend foi desenvolvida utilizando o Framework nestjs, utilizando Prisma e sqlite para o banco de dados.
+foi feita uma integração com um serviço de email gratuito chamado **resend** que pode ser utilizado para os testes.
+Mais desde que tenha as credenciais SMTP, e possivel utilizar qualquer outro serviço
 
 ## Utilização
 
-Acessando a url `http://localhost:3000/documentation` você terá uma documentação completa sobre todos os caminhos da API e como utiliza-los.
+Acessando a url `http://localhost:3001/documentation` você terá uma documentação completa sobre todos os caminhos da API e como utiliza-los. 
