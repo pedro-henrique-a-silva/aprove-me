@@ -34,7 +34,7 @@ jobs:
 
       - name: Transferindo arquivos para EC2
         run: |
-          scp  -i ~/.ssh/id_rsa -r . ${{ secrets.AWS_EC2_USER }}@${{ secrets.AWS_EC2_HOST }}:/home/${{ secrets.AWS_EC2_USER }}/apps
+          scp  -i ~/.ssh/id_rsa -r ./ ${{ secrets.AWS_EC2_USER }}@${{ secrets.AWS_EC2_HOST }}:/home/${{ secrets.AWS_EC2_USER }}/apps
 
       # - name: Deploy do amazon
       #   run: |
