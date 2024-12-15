@@ -14,6 +14,10 @@ function ListAssignor() {
     router.push(`/assignor/${id}`);
   }
 
+  const handleEditButtonClick = (id: string) => {
+    router.push(`/assignor/${id}/edit`);
+  }
+
   const handleDeleteButtonClick = async (id: string) => {
     const token = getTokenFromLocalStore('token');
     try {
@@ -68,6 +72,12 @@ function ListAssignor() {
                 className="px-4 py-1 rounded-md bg-sky-500 hover:bg-sky-700 hover:text-cyan-50" 
               >
                 Detalhes
+              </button>
+              <button
+                onClick={() => handleEditButtonClick(assignor.id)}
+                className="px-4 py-1 rounded-md bg-sky-500 hover:bg-sky-700 hover:text-cyan-50" 
+              >
+                Editar
               </button>
               <button
                 onClick={() => handleDeleteButtonClick(assignor.id)}
