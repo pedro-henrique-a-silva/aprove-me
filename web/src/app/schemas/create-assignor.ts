@@ -11,7 +11,7 @@ export const registerAssignorSchema = z.object({
     .string()
     .min(10, { message: "O telefone deve ter pelo menos 10 dígitos." })
     .max(11, { message: "O telefone deve ter no máximo 11 dígitos." }),
-  cpf: z
+  document: z
     .string()
     .min(11, { message: "O CPF deve ter exatamente 11 dígitos." })
     .max(11, { message: "O CPF deve ter exatamente 11 dígitos." }),
