@@ -4,7 +4,7 @@ import React from 'react'
 function page() {
   return (
     <div>
-      <CreateAssignor/>
+      <CreateAssignor isEditing={false}/>
     </div>
   )
 }
