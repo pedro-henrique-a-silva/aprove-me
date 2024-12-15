@@ -86,4 +86,6 @@ Existe uma action do github configurada para esse repositório, ela pode ser uti
 
 ## Utilização
 
-Acessando a url `http://localhost:3001/documentation` você terá uma documentação completa sobre todos os caminhos da API e como utiliza-los. 
+Acessando a url `http://localhost:3001/documentation` você terá uma documentação completa sobre todos os caminhos da API e como utiliza-los.
+
+[LINKEDIN](https://www.linkedin.com/in/pedro-henrique-a-silva)
