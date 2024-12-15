@@ -5,13 +5,26 @@ import { Assignor } from '../types/assignor';
 import { getTokenFromLocalStore } from '../utils/local-store-helper';
 import { createPayableSchema } from '../schemas/create-payable';
 import { ZodError } from 'zod';
-import { formatDateToApiFormat } from '../utils/date-helper';
-import { useRouter } from 'next/navigation';
+import { formatDate, formatDateToApiFormat } from '../utils/date-helper';
+import { useParams, useRouter } from 'next/navigation';
+import { Payable } from '../types/payable';
 
-function CreatePayable() {
+type CreatePayableProps = {
+  isEditing?: boolean;
+}
+
+function CreatePayable(props: CreatePayableProps) {
+  const { isEditing } = props;
   const [assignor, setAssignors] = useState<Assignor[]>([]);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [error, setError] = useState<string[] | null>(null);
+  const [formData, setFormData] = useState({
+    value: '',
+    emissionDate: '',
+  });
+
+  const params = useParams();
+  const { id } = params;
 
   const router = useRouter();
 
@@ -29,7 +42,10 @@ function CreatePayable() {
     const token = getTokenFromLocalStore('token');
 
     try {
-      const response = await connection.post('/integrations/payable', {
+      const url = isEditing ? `/integrations/payable/${id}` : '/integrations/payable'
+      const axioMethod = isEditing ? connection.put : connection.post;
+      console.log(formatDateToApiFormat(data.emissionDate as string))
+      const response = await axioMethod(url, {
           emissionDate: formatDateToApiFormat(data.emissionDate as string),
           value: data.value,
           assignorId: selectedOption,
@@ -57,6 +73,14 @@ function CreatePayable() {
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedOption(event.target.value);
   };
+
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  }
   
   useEffect(() => {
     if (error) {
@@ -79,6 +103,24 @@ function CreatePayable() {
     data();
   }, []);
 
+  useEffect(() => {
+    async function data() {
+      const token = getTokenFromLocalStore('token');
+      const payableResponse = await connection.get<Payable>(`/integrations/payable/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(payableResponse.data)
+      setFormData({
+        value: payableResponse.data.value,
+        emissionDate: formatDateToApiFormat(payableResponse.data.emissionDate),
+      })
+      setSelectedOption(payableResponse.data.assignorId);
+    }
+    data();
+  }, []);
+
   return (
     <>
     <form onSubmit={handleSubmit} className='flex flex-col justify-center w-full mt-10 gap-4'>
@@ -86,19 +128,24 @@ function CreatePayable() {
           <label htmlFor="">Valor</label>
           <input
             placeholder='100.00'
+            onChange={(e) => handleInputChange(e)}
             className='border shadow p-1' 
             id='value' 
             name='value' 
+            value={formData.value}
             type="text" />
+            
         </div>
         <div className='flex flex-col pb-1'>
           <label htmlFor="">Data da emissão:</label>
           <input
+            onChange={(e) => handleInputChange(e)}
             placeholder='31/12/2024'
             className='border shadow p-1' 
             id='emissionDate' 
-            name='emissionDate' 
-            type="text" />
+            name='emissionDate'
+            value={formData.emissionDate}
+            type="date" />
         </div>
 
         <div className='flex flex-col pb-1'>
