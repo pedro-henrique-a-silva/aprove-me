@@ -10,8 +10,10 @@ jobs:
       - name: Checkout the files
         uses: actions/checkout@v3
 
-      - name: Teste Backend
+      - name: Instala o node
         uses: actions/setup-node@v2
         with:
           node-version: '18'
+
+      - name: Roda os testes do backend
         run: npm run test:backend
