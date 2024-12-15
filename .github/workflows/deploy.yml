@@ -30,28 +30,29 @@ jobs:
 
       - name: Deploy to EC2
         run: |
-          ssh -i ~/.ssh/id_rsa ${{ secrets.AWS_EC2_USER }}@${{ secrets.AWS_EC2_HOST }} "
-          rm -rf ~/aprove-me &&
-          git clone -b pedro-henrique-a-silva-bankme-2024 git@github.com:pedro-henrique-a-silva/aprove-me.git &&
-          echo "DB_NAME=${{ secrets.DB_NAME }}" >> ~/aprove-me/bankme/.env &&
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> ~/aprove-me/bankme/.env &&
-          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> ~/aprove-me/bankme/.env &&
-          echo "JWT_EXPIRES_IN=${{ secrets.JWT_EXPIRES_IN }}" >> ~/aprove-me/bankme/.env &&
-          echo "URL=${{ secrets.URL }}" >> ~/aprove-me/bankme/.env &&
-          echo "PORT=${{ secrets.PORT }}" >> ~/aprove-me/bankme/.env &&
-          echo "NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}" >> ~/aprove-me/bankme/.env &&
-          echo "NODE_ENV=production" >> ~/aprove-me/bankme/.env &&
-          echo "SMTP_HOST=${{ secrets.SMTP_HOST }}" >> ~/aprove-me/bankme/.env &&
-          echo "SMTP_PORT=${{ secrets.SMTP_PORT }}" >> ~/aprove-me/bankme/.env &&
-          echo "SMTP_TO=${{ secrets.SMTP_TO }}" >> ~/aprove-me/bankme/.env &&
-          echo "SMTP_FROM=${{ secrets.SMTP_FROM }}" >> ~/aprove-me/bankme/.env &&
-          echo "SMTP_USERNAME=${{ secrets.SMTP_USERNAME }}" >> ~/aprove-me/bankme/.env &&
-          echo "SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}" >> ~/aprove-me/bankme/.env &&
-          cp ~/aprove-me/bankme/.env ~/aprove-me/web/.env &&
-          cd ~/aprove-me &&
-          docker-compose down -v &&
-          docker-compose up -d --build
-          "
+            ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.AWS_EC2_USER }}@${{ secrets.AWS_EC2_HOST }} << 'EOF'
+              rm -rf ~/aprove-me &&
+              git clone -b pedro-henrique-a-silva-bankme-2024 git@github.com:pedro-henrique-a-silva/aprove-me.git &&
+              echo "DB_NAME=${{ secrets.DB_NAME }}" >> ~/aprove-me/bankme/.env &&
+              echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> ~/aprove-me/bankme/.env &&
+              echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> ~/aprove-me/bankme/.env &&
+              echo "JWT_EXPIRES_IN=${{ secrets.JWT_EXPIRES_IN }}" >> ~/aprove-me/bankme/.env &&
+              echo "URL=${{ secrets.URL }}" >> ~/aprove-me/bankme/.env &&
+              echo "PORT=${{ secrets.PORT }}" >> ~/aprove-me/bankme/.env &&
+              echo "NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}" >> ~/aprove-me/bankme/.env &&
+              echo "NODE_ENV=production" >> ~/aprove-me/bankme/.env &&
+              echo "SMTP_HOST=${{ secrets.SMTP_HOST }}" >> ~/aprove-me/bankme/.env &&
+              echo "SMTP_PORT=${{ secrets.SMTP_PORT }}" >> ~/aprove-me/bankme/.env &&
+              echo "SMTP_TO=${{ secrets.SMTP_TO }}" >> ~/aprove-me/bankme/.env &&
+              echo "SMTP_FROM=${{ secrets.SMTP_FROM }}" >> ~/aprove-me/bankme/.env &&
+              echo "SMTP_USERNAME=${{ secrets.SMTP_USERNAME }}" >> ~/aprove-me/bankme/.env &&
+              echo "SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}" >> ~/aprove-me/bankme/.env &&
+              cp ~/aprove-me/bankme/.env ~/aprove-me/web/.env &&
+              cd ~/aprove-me &&
+              docker-compose down -v &&
+              docker-compose up -d --build
+            EOF
+
 
       # - name: Deploy do amazon
       #   run: |
