@@ -30,7 +30,7 @@ jobs:
 
       - name: Test SSH Connection
         run: |
-          ssh -i ~/.ssh/id_rsa ubuntu@ec2-3-16-207-167.us-east-2.compute.amazonaws.com "echo 'SSH is working'"
+          ssh -i ~/.ssh/id_rsa ubuntu@ec2-3-16-207-167.us-east-2.compute.amazonaws.com "echo 'SSH is working' >> consegui.txt"
 
       - name: Transferindo arquivos para EC2
         run: |
