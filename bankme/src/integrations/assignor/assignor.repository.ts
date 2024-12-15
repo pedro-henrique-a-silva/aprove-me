@@ -103,7 +103,7 @@ export default class AssignorRepository {
     const assignors = await this.prismaService.assignor.findMany({
       where: {
         active: true,
-      }
+      },
     });
 
     return assignors.map((assignor) => {
