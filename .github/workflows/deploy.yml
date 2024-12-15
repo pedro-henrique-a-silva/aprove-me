@@ -16,4 +16,4 @@ jobs:
           node-version: '18'
 
       - name: Roda os testes do backend
-        run: npm run test:backend
+        run: npm run test:back
