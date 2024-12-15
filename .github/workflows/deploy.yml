@@ -16,7 +16,7 @@ jobs:
           node-version: '18'
 
       - name: Instala as dependẽncias do backend
-        run: npm i install:back
+        run: npm run install:back
 
       - name: Roda os testes do backend
         run: npm run test:back
