@@ -3,7 +3,6 @@ import { AssignorService } from './assignor.service';
 import AssignorRepository from './assignor.repository';
 import { assignorEntityMock, assignorToCreationMock } from './mocks/mock';
 import AssignorDto from './dto/AssignorDto';
-import * as bcrypt from 'bcrypt';
 
 describe('AssignorService', () => {
   let assignorService: AssignorService;
@@ -20,6 +19,7 @@ describe('AssignorService', () => {
             findAssignorById: jest.fn(),
             updateAssignorById: jest.fn(),
             deleteAssignorById: jest.fn(),
+            findAssignorByEmail: jest.fn(),
           },
         },
       ],
@@ -38,14 +38,13 @@ describe('AssignorService', () => {
     it('should create a new assignor with success', async () => {
       const assignorEntityFromRepository = assignorEntityMock;
 
-      assignorEntityFromRepository.password = await bcrypt.hash(
-        assignorEntityMock.password,
-        10,
-      );
-
       assignorRepository.createAssignorRegister = jest
         .fn()
         .mockResolvedValue(assignorEntityFromRepository);
+
+      assignorRepository.findAssignorByEmail = jest
+        .fn()
+        .mockResolvedValue(false);
 
       const assignorFromController = assignorToCreationMock.toEntity();
 
@@ -69,11 +68,6 @@ describe('AssignorService', () => {
   describe('findAssignorById', () => {
     it('should find a assignor by id with success', async () => {
       const assignorEntityFromRepository = assignorEntityMock;
-
-      assignorEntityFromRepository.password = await bcrypt.hash(
-        assignorEntityMock.password,
-        10,
-      );
 
       assignorRepository.findAssignorById = jest
         .fn()
@@ -103,11 +97,6 @@ describe('AssignorService', () => {
   describe('updateAssignorById', () => {
     it('should update a assignor by id with success', async () => {
       const assignorEntityFromRepository = assignorEntityMock;
-
-      assignorEntityFromRepository.password = await bcrypt.hash(
-        assignorEntityFromRepository.password,
-        10,
-      );
 
       assignorRepository.updateAssignorById = jest
         .fn()
@@ -146,11 +135,6 @@ describe('AssignorService', () => {
   describe('deleteAssignorById', () => {
     it('should delete a assignor by id with success', async () => {
       const assignorEntityFromRepository = assignorEntityMock;
-
-      assignorEntityFromRepository.password = await bcrypt.hash(
-        assignorEntityMock.password,
-        10,
-      );
 
       assignorRepository.updateAssignorById = jest
         .fn()
