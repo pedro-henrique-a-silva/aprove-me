@@ -28,6 +28,10 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.AWS_EC2_HOST }} >> ~/.ssh/known_hosts
 
+      - name: Test SSH Connection
+        run: |
+          ssh -i ~/.ssh/id_rsa ubuntu@ec2-3-16-207-167.us-east-2.compute.amazonaws.com "echo 'SSH is working'"
+
       - name: Transferindo arquivos para EC2
         run: |
           scp -r . ${{ secrets.AWS_EC2_USER }}@${{ secrets.AWS_EC2_HOST }}:/home/${{ secrets.AWS_EC2_USER }}/app
