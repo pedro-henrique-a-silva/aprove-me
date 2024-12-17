@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import AuthLoginDto from './dto/AuthLoginDto';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -50,5 +50,18 @@ export class AuthController {
   })
   async signup(@Body() body: AuthLoginDto) {
     await this.authService.signup(body.toEntity());
+  }
+
+  @Get('me')
+  @ApiResponse({
+    status: 200,
+    description: 'User found.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized, invalid token.',
+  })
+  async me() {
+    return 'me';
   }
 }
