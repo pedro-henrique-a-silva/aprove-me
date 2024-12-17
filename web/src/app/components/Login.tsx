@@ -1,10 +1,12 @@
 "use client"
 import React, { useEffect, useState } from 'react'
-import { ZodError } from 'zod';
+import {  ZodError } from 'zod';
 import { loginSchema } from '../schemas/login-schema';
 import { connection } from '../utils/api-connection';
 import { useRouter } from 'next/navigation';
 import { saveTokenToLocalStore } from '../utils/local-store-helper';
+import { saveCookie } from '../utils/cookies-helper';
+
 
 function Login() {
   const [error, setError] = useState<string[] | null>(null);
@@ -30,6 +32,7 @@ function Login() {
       const { token } = response.data;
 
       saveTokenToLocalStore('token', token);
+      await saveCookie(token)
 
       setTimeout(() => {
         router.push("/payable");
