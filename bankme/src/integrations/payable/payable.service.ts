@@ -1,8 +1,8 @@
 import {
-  HttpException,
-  HttpStatus,
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import Payable from '../entity/Payable';
 import PayableRepository from './payable.repository';
@@ -45,7 +45,7 @@ export class PayableService {
     const payable = await this.payableRepository.findPayableById(id);
 
     if (!payable) {
-      throw new HttpException('Payable not found.', HttpStatus.NOT_FOUND);
+      throw new NotFoundException('Payable not found.');
     }
 
     return PayableDto.fromEntity(payable);
@@ -55,7 +55,7 @@ export class PayableService {
     const payableFound = await this.payableRepository.findPayableById(id);
 
     if (!payableFound) {
-      throw new HttpException('Payable not found.', HttpStatus.NOT_FOUND);
+      throw new NotFoundException('Payable not found.');
     }
 
     await this.verifyAuthority(email, payableFound.assignorId);
@@ -72,7 +72,7 @@ export class PayableService {
     const payable = await this.payableRepository.findPayableById(id);
 
     if (!payable) {
-      throw new HttpException('Payable not found.', HttpStatus.NOT_FOUND);
+      throw new NotFoundException('Payable not found.');
     }
 
     await this.verifyAuthority(email, payable.assignorId);
@@ -88,7 +88,7 @@ export class PayableService {
     const assignor = await this.assignorService.findAssignorByEmail(user.sub);
 
     if (!assignor) {
-      throw new HttpException('Assignor not found.', HttpStatus.NOT_FOUND);
+      throw new NotFoundException('Assignor not found.');
     }
 
     try {
@@ -112,13 +112,12 @@ export class PayableService {
     const assignor = await this.assignorService.findAssignorByEmail(email);
 
     if (!assignor) {
-      throw new HttpException('Assignor not found.', HttpStatus.NOT_FOUND);
+      throw new NotFoundException('Assignor not found.');
     }
 
     if (assignor.id !== assignorId) {
-      throw new HttpException(
+      throw new ForbiddenException(
         'Assignor not allowed to do this operation.',
-        HttpStatus.FORBIDDEN,
       );
     }
   }
