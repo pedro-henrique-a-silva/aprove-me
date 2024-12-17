@@ -32,7 +32,7 @@ export class AssignorService {
     const assignor = await this.assignorRepository.findAssignorById(id);
 
     if (!assignor) {
-      throw new HttpException('Assignor not found.', HttpStatus.NOT_FOUND);
+      throw new NotFoundException('Assignor not found.');
     }
 
     return AssignorDto.fromEntity(assignor);
@@ -48,7 +48,7 @@ export class AssignorService {
     );
 
     if (!updatedAssignor) {
-      throw new HttpException('Assignor not found.', HttpStatus.NOT_FOUND);
+      throw new NotFoundException('Assignor not found.');
     }
 
     return AssignorDto.fromEntity(updatedAssignor);
