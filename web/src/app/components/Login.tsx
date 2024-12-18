@@ -6,7 +6,7 @@ import { connection } from '../utils/api-connection';
 import { useRouter } from 'next/navigation';
 import { saveTokenToLocalStore } from '../utils/local-store-helper';
 import { saveCookie } from '../utils/cookies-helper';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
