@@ -1,4 +1,5 @@
 "use client"
+import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import React from 'react'
 
@@ -9,12 +10,12 @@ function RegisterPayableButton() {
     router.push('/payable/create');
   }
   return (
-    <button
+    <Button 
       onClick={handleClick}
-      className="px-4 py-1 w-1/2 mb-6 rounded-md bg-sky-500 hover:bg-sky-700 hover:text-cyan-50" 
+      className='bg-blue-700 hover:bg-blue-600 w-1/5 mb-6'
     >
-          Registrar Recebivel
-    </button>
+      Registrar Recebível
+    </Button>
   )
 }
 
