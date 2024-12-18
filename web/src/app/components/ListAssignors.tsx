@@ -4,6 +4,8 @@ import { getTokenFromLocalStore } from '../utils/local-store-helper';
 import { connection } from '../utils/api-connection';
 import { useRouter } from 'next/navigation';
 import { Assignor } from '../types/assignor';
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
 
 function ListAssignor() {
   const [assignor, setAssignor] = useState<Assignor[]>([]);
@@ -51,46 +53,51 @@ function ListAssignor() {
   }, []);
 
   return (
-    <table>
-      <thead>
-        <tr className='text-center'>
-          <th className='text-center'>Id</th>
-          <th className='text-center'>Nome</th>
-          <th className='text-center'>CPF</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {assignor.map((assignor) => (
-          <tr key={assignor.id}>
-            <td className='text-center px-4'>{assignor.id}</td>
-            <td className='text-center px-4'>{assignor.name}</td>
-            <td className='text-center px-4'>{assignor.document}</td>
-            <td className='flex justify-center items-center gap-2 text-center px-4'>
-              <button
-                onClick={() => handleDetailsButtonClick(assignor.id)}
-                className="px-4 py-1 rounded-md bg-sky-500 hover:bg-sky-700 hover:text-cyan-50" 
-              >
-                Detalhes
-              </button>
-              <button
-                onClick={() => handleEditButtonClick(assignor.id)}
-                className="px-4 py-1 rounded-md bg-sky-500 hover:bg-sky-700 hover:text-cyan-50" 
-              >
-                Editar
-              </button>
-              <button
-                onClick={() => handleDeleteButtonClick(assignor.id)}
-                className="px-4 py-1 font-semibold rounded-md bg-red-300 hover:bg-red-400 hover:text-cyan-50" 
-              >
-                X
-              </button>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-      
-    </table>
+    <>
+    <Table className='w-3/5 mx-auto'>
+      <TableCaption>Lista de Cedentes.</TableCaption>
+      <TableHeader>
+        <TableRow>
+          <TableHead className="w-[400px]">ID</TableHead>
+          <TableHead>Nome</TableHead>
+          <TableHead className="w-[200px]">CPF</TableHead>
+          <TableHead className="w-[350px] text-right"></TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {assignor.map((a) => (
+          <TableRow key={a.id}>
+            <TableCell className="font-medium">{a.id}</TableCell>
+            <TableCell>{a.name}</TableCell>
+            <TableCell>{a.document}</TableCell>
+            <TableCell className="text-right flex gap-2">
+                <Button 
+                  onClick={() => handleDetailsButtonClick(a.id)}
+                  className='bg-blue-700 hover:bg-blue-600'
+                >
+                  Detalhes
+                </Button>
+                <Button 
+                  onClick={() => handleEditButtonClick(a.id)}
+                  className='bg-blue-700 hover:bg-blue-600'
+                >
+                  Editar
+                </Button>
+                <Button 
+                  onClick={() => handleDeleteButtonClick(a.id)}
+                  variant='destructive'
+                >
+                  X
+                </Button>
+            </TableCell>
+            
+          </TableRow>
+            ))}
+        
+      </TableBody>
+    </Table>
+   
+    </>
   )
 }
 
