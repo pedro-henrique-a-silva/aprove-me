@@ -5,6 +5,9 @@ import { connection } from '../utils/api-connection';
 import { Payable } from '../types/payable';
 import { formatDate } from '../utils/date-helper';
 import { useRouter } from 'next/navigation';
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
+import { formatBRL } from '../utils/format-money';
 
 function ListPayables() {
   const [payables, setPayable] = useState<Payable[]>([]);
@@ -52,46 +55,51 @@ function ListPayables() {
   }, []);
 
   return (
-    <table>
-      <thead>
-        <tr className='text-center'>
-          <th className='text-center'>Id</th>
-          <th className='text-center'>Value</th>
-          <th className='text-center'>Emission Date</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {payables.map((payable) => (
-          <tr key={payable.id}>
-            <td className='text-center px-4'>{payable.id}</td>
-            <td className='text-center px-4'>{payable.value}</td>
-            <td className='text-center px-4'>{formatDate(payable.emissionDate)}</td>
-            <td className='flex justify-center items-center gap-2 text-center px-4'>
-              <button
+    <>
+    <Table className='w-4/5 mx-auto'>
+    <TableCaption>Lista de Recebíveis.</TableCaption>
+    <TableHeader>
+      <TableRow>
+        <TableHead className="w-[400px]">ID</TableHead>
+        <TableHead>Value</TableHead>
+        <TableHead className="w-[200px]">Emission Date</TableHead>
+        <TableHead className="w-[350px] text-right"></TableHead>
+      </TableRow>
+    </TableHeader>
+    <TableBody>
+      {payables.map((payable) => (
+        <TableRow key={payable.id}>
+          <TableCell className="font-medium">{payable.id}</TableCell>
+          <TableCell>{formatBRL(Number(payable.value))}</TableCell>
+          <TableCell>{formatDate(payable.emissionDate)}</TableCell>
+          <TableCell className="text-right flex gap-2">
+              <Button 
                 onClick={() => handleDetailsButtonClick(payable.id)}
-                className="px-4 py-1 rounded-md bg-sky-500 hover:bg-sky-700 hover:text-cyan-50" 
+                className='bg-blue-700 hover:bg-blue-600'
               >
                 Detalhes
-              </button>
-              <button
+              </Button>
+              <Button 
                 onClick={() => handleEditButtonClick(payable.id)}
-                className="px-4 py-1 rounded-md bg-sky-500 hover:bg-sky-700 hover:text-cyan-50" 
+                className='bg-blue-700 hover:bg-blue-600'
               >
                 Editar
-              </button>
-              <button
+              </Button>
+              <Button 
                 onClick={() => handleDeleteButtonClick(payable.id)}
-                className="px-4 py-1 font-semibold rounded-md bg-red-300 hover:bg-red-400 hover:text-cyan-50" 
+                variant='destructive'
               >
                 X
-              </button>
-            </td>
-          </tr>
-        ))}
-      </tbody>
+              </Button>
+          </TableCell>
+          
+        </TableRow>
+          ))}
       
-    </table>
+    </TableBody>
+  </Table>
+  
+    </>
   )
 }
 
