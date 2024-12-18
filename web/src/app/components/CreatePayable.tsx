@@ -6,8 +6,17 @@ import { getTokenFromLocalStore } from '../utils/local-store-helper';
 import { createPayableSchema } from '../schemas/create-payable';
 import { ZodError } from 'zod';
 import { formatDate, formatDateToApiFormat } from '../utils/date-helper';
+import { cn } from "@/lib/utils"
 import { useParams, useRouter } from 'next/navigation';
 import { Payable } from '../types/payable';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { CalendarIcon } from 'lucide-react';
+import { Calendar } from '@/components/ui/calendar';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 type CreatePayableProps = {
   isEditing?: boolean;
@@ -44,7 +53,6 @@ function CreatePayable(props: CreatePayableProps) {
     try {
       const url = isEditing ? `/integrations/payable/${id}` : '/integrations/payable'
       const axioMethod = isEditing ? connection.put : connection.post;
-      console.log(formatDateToApiFormat(data.emissionDate as string))
       const response = await axioMethod(url, {
           emissionDate: formatDateToApiFormat(data.emissionDate as string),
           value: data.value,
@@ -70,8 +78,8 @@ function CreatePayable(props: CreatePayableProps) {
     
   }
 
-  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedOption(event.target.value);
+  const handleChange = (event: string) => {
+    setSelectedOption(event);
   };
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -98,92 +106,121 @@ function CreatePayable(props: CreatePayableProps) {
           Authorization: `Bearer ${token}`,
         },
       });
+
       setAssignors(assignorsResponse.data);
     }
     data();
   }, []);
 
+
   useEffect(() => {
     async function data() {
       const token = getTokenFromLocalStore('token');
-      const payableResponse = await connection.get<Payable>(`/integrations/payable/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      console.log(payableResponse.data)
-      setFormData({
-        value: payableResponse.data.value,
-        emissionDate: formatDateToApiFormat(payableResponse.data.emissionDate),
-      })
-      setSelectedOption(payableResponse.data.assignorId);
+ 
+      try {
+        const payableResponse = await connection.get<Payable>(`/integrations/payable/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+  
+        setFormData({
+          value: payableResponse.data.value,
+          emissionDate: formatDateToApiFormat(payableResponse.data.emissionDate),
+        })
+        setSelectedOption(payableResponse.data.assignorId);
+
+      } catch {
+        console.log('criar o recebível')
+      }
     }
     data();
   }, []);
 
   return (
     <>
-    <form onSubmit={handleSubmit} className='flex flex-col justify-center w-full mt-10 gap-4'>
-        <div className='flex flex-col pb-1'>
-          <label htmlFor="">Valor</label>
-          <input
-            placeholder='100.00'
-            onChange={(e) => handleInputChange(e)}
-            className='border shadow p-1' 
-            id='value' 
-            name='value' 
-            value={formData.value}
-            type="text" />
-            
+    <Card className='mt-4'>
+      <CardHeader>
+        <CardTitle className='text-center mt-2'>{id ? "Editar Recebível" : "Registras Recebível"}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className='flex flex-col justify-center w-full gap-4'>
+          <div className='flex flex-col pb-1'>
+            <Label className='mb-2' htmlFor="username">Valor:</Label>
+            <Input 
+              placeholder='100.00'
+              onChange={(e) => handleInputChange(e)}
+              className='border shadow p-1' 
+              id='value' 
+              name='value' 
+              value={formData.value}
+              type="text"  
+            />
         </div>
         <div className='flex flex-col pb-1'>
-          <label htmlFor="">Data da emissão:</label>
-          <input
-            onChange={(e) => handleInputChange(e)}
-            placeholder='31/12/2024'
-            className='border shadow p-1' 
-            id='emissionDate' 
-            name='emissionDate'
-            value={formData.emissionDate}
-            type="date" />
+            <Label className='mb-2' htmlFor="username">Data da emissão:</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={"outline"}
+                  className={cn(
+                    "w-[240px] justify-start text-left font-normal",
+                    !formData.emissionDate && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon />
+                  {formData.emissionDate ? formatDate(formData.emissionDate) : <span>Data de emissão</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={formData.emissionDate}
+                  onSelect={(e: Date) => setFormData((prev) => ({...prev, emissionDate: formatDateToApiFormat(e.toUTCString())}))}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
         </div>
-
         <div className='flex flex-col pb-1'>
-          <label htmlFor="assignors">Cedente:</label>
-          <select
+          <Label className='mb-2' htmlFor="username">Cedente:</Label>
+          <Select
             id="assignors"
             name="assignors"
             value={selectedOption || ''}
-            onChange={handleChange}
-            className="border px-2 py-1 rounded p-1" 
+            onValueChange={handleChange}
+            defaultValue={selectedOption || 'Selecione um Cedente'}
           >
-            <option value="" disabled>
-              Selecione uma opção
-            </option>
-            {assignor.map((assignor) => (
-              <option key={assignor.id} value={assignor.id}>
-                {assignor.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        
-        <div className='flex flex-col justify-center pb-1 mt-2 mb-4'>
-          <button 
-            className="px-4 py-1 rounded-md bg-sky-500 hover:bg-sky-700 hover:text-cyan-50" 
-            type="submit">
-              Registrar Recebível
-          </button>
+            <SelectTrigger className="w-[280px]">
+              <SelectValue placeholder={selectedOption || 'Selecione um Cedente'} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup >
+                {assignor.map((assignor) => (
+                    <SelectItem key={assignor.id} value={assignor.id}>{assignor.name}</SelectItem>
+                  ))}
+              </SelectGroup>
+            </SelectContent>
+        </Select>
         </div>
 
-    </form>
-    {error && (
-      <div className='flex flex-col justify-center'>
-        {error.map((e, i) => (
-          <div key={i} className='text-red-400 bg-red-100 mb-2 p-2 rounded text-center'>{e}</div>
-        ))}
-      </div>
-    )}
+          <div className='flex flex-col justify-center pb-1 mt-2 mb-2'>
+            <Button className='bg-blue-700 hover:bg-blue-600' type="submit">Registrar Recebível</Button>
+          </div>
+      </form>
+        
+      </CardContent>
+      <CardFooter>
+        {error && (
+        <div className='flex flex-col justify-center'>
+          {error.map((e, i) => (
+            <div key={i} className='text-red-400 bg-red-100 mb-2 p-2 rounded text-center'>{e}</div>
+          ))}
+        </div>
+      )}
+      </CardFooter>
+    </Card>
+   
     </>
   )
 }
