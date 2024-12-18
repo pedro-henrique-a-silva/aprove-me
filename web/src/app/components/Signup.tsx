@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { signupSchema } from '../schemas/signup-schema';
 import { ZodError } from 'zod';
 import { connection } from '../utils/api-connection';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
