@@ -4,6 +4,7 @@ import { getTokenFromLocalStore } from '../utils/local-store-helper';
 import { connection } from '../utils/api-connection';
 import { useParams } from 'next/navigation';
 import { Assignor } from '../types/assignor';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 
 function AssignorDetail() {
@@ -24,9 +25,11 @@ function AssignorDetail() {
     data();
   }, []);
   return (
-    <div className='flex flex-col justify-center items-center p-6 gap-6 mt-6 border-1 shadow rounded-xl shadow-black border-slate-300'>
-      <div>
-        <h1 className='text-black font-semibold'>Cedente</h1>
+    <Card className='mt-4 w-2/5 mx-auto'>
+      <CardHeader>
+        <CardTitle className='text-center mt-2'>Detalhes do Cedente</CardTitle>
+      </CardHeader>
+      <CardContent>
         {assignor && (
           <div>
             <p>Id: {assignor.id}</p>
@@ -36,10 +39,9 @@ function AssignorDetail() {
             <p>Telefone: {assignor.phone}</p>
           </div>
         )}
-      </div>
-
-
-    </div>
+     
+      </CardContent>
+    </Card>
   )
 }
 
