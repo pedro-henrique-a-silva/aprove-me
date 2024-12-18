@@ -7,6 +7,8 @@ import { Payable } from '../types/payable';
 import { useParams } from 'next/navigation';
 import { Assignor } from '../types/assignor';
 import { formatDate } from '../utils/date-helper';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 
 
 function PayableDetail() {
@@ -36,9 +38,12 @@ function PayableDetail() {
     data();
   }, []);
   return (
-    <div className='flex flex-col justify-center items-center p-6 gap-6 mt-6 border-1 shadow rounded-xl shadow-black border-slate-300'>
-     <div>
-     <h1 className='text-black font-semibold'>Detalhes do Recebivel</h1>
+   
+      <Card className='mt-4 w-2/5 mx-auto'>
+      <CardHeader>
+        <CardTitle className='text-center mt-2'>Detalhes do Recebível</CardTitle>
+      </CardHeader>
+      <CardContent>
       {payable && (
         <div>
           <p>Id: {payable.id}</p>
@@ -46,22 +51,28 @@ function PayableDetail() {
           <p>Emission Date: {formatDate(payable.emissionDate)}</p>
         </div>
       )}
-     </div>
+     
+      </CardContent>
 
-      <div>
-        <h3 className='text-black font-semibold'>Cedente</h3>
+      <Separator />
+
+      <CardHeader>
+        <CardTitle className='text-center mt-2'>Detalhes do Cedente</CardTitle>
+      </CardHeader>
+      <CardContent>
         {assignor && (
           <div>
             <p>Id: {assignor.id}</p>
             <p>Nome: {assignor.name}</p>
             <p>Email: {assignor.email}</p>
             <p>CPF: {assignor.document}</p>
+            <p>Telefone: {assignor.phone}</p>
           </div>
         )}
-      </div>
+     
+      </CardContent>
+    </Card>
 
-
-    </div>
   )
 }
 
