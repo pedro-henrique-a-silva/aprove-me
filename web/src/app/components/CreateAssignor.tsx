@@ -6,6 +6,10 @@ import { ZodError } from 'zod';
 import { useParams, useRouter } from 'next/navigation';
 import { registerAssignorSchema } from '../schemas/create-assignor';
 import { Assignor } from '../types/assignor';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 
 type CreateAssignorProps = {
   isEditing?: boolean;
@@ -106,69 +110,75 @@ function CreateAssignor(props: CreateAssignorProps) {
 
   return (
     <>
-    <form onSubmit={handleSubmit} className='flex flex-col justify-center w-full mt-10 gap-4'>
-        <div className='flex flex-col pb-1'>
-          <label htmlFor="">Nome:</label>
-          <input
-            onChange={(e) => handleInputChange(e)}
-            placeholder='100.00'
-            className='border shadow p-1' 
-            id='name' 
-            name='name'
-            value={formData.name}
-            type="text" />
-        </div>
-        <div className='flex flex-col pb-1'>
-          <label htmlFor="">CPF:</label>
-          <input
-            onChange={(e) => handleInputChange(e)}
-            placeholder='00000000000'
-            className='border shadow p-1' 
-            id='document' 
-            name='document'
-            value={formData.document}
-            type="text" />
-        </div>
-        <div className='flex flex-col pb-1'>
-          <label htmlFor="">E-mail:</label>
-          <input
-            onChange={(e) => handleInputChange(e)}
-            placeholder='email@email.com'
-            className='border shadow p-1' 
-            id='email' 
-            name='email' 
-            value={formData.email}
-            type="text" />
-        </div>
-        <div className='flex flex-col pb-1'>
-          <label htmlFor="">E-mail:</label>
-          <input
-            onChange={(e) => handleInputChange(e)}
-            placeholder='00000000000'
-            className='border shadow p-1' 
-            id='phone' 
-            name='phone' 
-            value={formData.phone}
-            type="text" />
-        </div>
+    <Card className='mt-4'>
+      <CardHeader>
+        <CardTitle className='text-center mt-2'>{id ? "Editar Cedente" : "Registras Cedente"}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className='flex flex-col justify-center w-full gap-4'>
+          <div className='flex flex-col pb-1'>
+            <Label className='mb-2' htmlFor="username">Nome:</Label>
+            <Input 
+              onChange={(e) => handleInputChange(e)}
+              placeholder='Nome'
+              id='name' 
+              name='name'
+              value={formData.name}
+              type="text" /> 
+          </div>
+          <div className='flex flex-col pb-1'>
+            <Label className='mb-2' htmlFor="username">CPF:</Label>
+            <Input 
+              onChange={(e) => handleInputChange(e)}
+              placeholder='00000000000'
+              className='border shadow p-1' 
+              id='document' 
+              name='document'
+              value={formData.document}
+              type="text" />
+          </div>
 
+          <div className='flex flex-col pb-1'>
+            <Label className='mb-2' htmlFor="username">E-mail:</Label>
+            <Input 
+              onChange={(e) => handleInputChange(e)}
+              placeholder='email@email.com'
+              className='border shadow p-1' 
+              id='email' 
+              name='email' 
+              value={formData.email}
+              type="text" />
+          </div>
+          <div className='flex flex-col pb-1'>
+            <Label className='mb-2' htmlFor="username">Telefone:</Label>
+            <Input 
+               onChange={(e) => handleInputChange(e)}
+               placeholder='99 99999 9999'
+               className='border shadow p-1' 
+               id='phone' 
+               name='phone' 
+               value={formData.phone}
+               type="text" />
+             
+          </div>
+       
+        <div className='flex flex-col justify-center pb-1 mt-2 mb-2'>
+          <Button className='bg-blue-700 hover:bg-blue-600' type="submit">Registrar Cedente</Button>
+        </div>
+      </form>
         
-        <div className='flex flex-col justify-center pb-1 mt-2 mb-4'>
-          <button 
-            className="px-4 py-1 rounded-md bg-sky-500 hover:bg-sky-700 hover:text-cyan-50" 
-            type="submit">
-              Registrar Cedente
-          </button>
+      </CardContent>
+      <CardFooter>
+        {error && (
+        <div className='flex flex-col justify-center'>
+          {error.map((e, i) => (
+            <div key={i} className='text-red-400 bg-red-100 mb-2 p-2 rounded text-center'>{e}</div>
+          ))}
         </div>
-
-    </form>
-    {error && (
-      <div className='flex flex-col justify-center'>
-        {error.map((e, i) => (
-          <div key={i} className='text-red-400 bg-red-100 mb-2 p-2 rounded text-center'>{e}</div>
-        ))}
-      </div>
-    )}
+      )}
+      </CardFooter>
+    </Card>
+  
     </>
   )
 }
