@@ -6,6 +6,11 @@ import PayableCreationDto from '../payable/dto/PayableCreationDto';
 import { DeadProducerService } from './dead-producer.service';
 import Payable from '../entity/Payable';
 
+const RABBITMQ_USER = process.env.RABBITMQ_USER;
+const RABBITMQ_PASSWORD = process.env.RABBITMQ_PASSWORD;
+const RABBITMQ_HOST = process.env.RABBITMQ_HOST;
+const RABBITMQ_PORT = process.env.RABBITMQ_PORT;
+
 @Injectable()
 export class MicroServicoService {
   private readonly maxAttempts = 3;
@@ -19,7 +24,9 @@ export class MicroServicoService {
     private readonly payableRepository: PayableRepository,
     private readonly deadProducerService: DeadProducerService,
   ) {
-    const connection = amqp.connect(['amqp://admin:admin@rabbitmq:5672']);
+    const connection = amqp.connect([
+      `amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@${RABBITMQ_HOST}:${RABBITMQ_PORT}`,
+    ]);
     this.channelWrapper = connection.createChannel();
   }
 
@@ -35,10 +42,6 @@ export class MicroServicoService {
       if (!assignor) {
         this.logger.error(`Assignor not found -> ${payableString}`);
         await this.deadProducerService.addToDeadQueue(payable);
-        await this.emailService.sendFailurePaymentEmail(
-          'Assignor not found',
-          payable.value,
-        );
         continue;
       }
 
