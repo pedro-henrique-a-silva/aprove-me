@@ -5,14 +5,10 @@ import { MailerService } from '@nestjs-modules/mailer';
 export class EmailService {
   constructor(private readonly mailerService: MailerService) {}
 
-  async sendSuccessPaymentEmail(
-    email: string,
-    name: string,
-    value: number,
-  ): Promise<void> {
+  async sendSuccessPaymentEmail(name: string, value: number): Promise<void> {
     try {
       await this.mailerService.sendMail({
-        to: process.env.TO,
+        to: process.env.SMTP_TO,
         subject: 'Pagamento Processado com sucesso',
         template: 'success-payment',
         context: {
@@ -21,21 +17,16 @@ export class EmailService {
         },
       });
     } catch (error) {
-      console.error('Error sending email:', error);
       throw new ServiceUnavailableException(
         'Email service is temporarily unavailable. Please try again later.',
       );
     }
   }
 
-  async sendFailurePaymentEmail(
-    email: string,
-    name: string,
-    value: number,
-  ): Promise<void> {
+  async sendFailurePaymentEmail(name: string, value: number): Promise<void> {
     try {
       await this.mailerService.sendMail({
-        to: process.env.TO,
+        to: process.env.SMTP_TO,
         subject: 'O Processamento do seu pagmento falhou',
         template: 'failed-payment',
         context: {
@@ -44,7 +35,6 @@ export class EmailService {
         },
       });
     } catch (error) {
-      console.error('Error sending email:', error);
       throw new ServiceUnavailableException(
         'Email service is temporarily unavailable. Please try again later.',
       );
