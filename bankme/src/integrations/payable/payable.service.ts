@@ -13,6 +13,11 @@ import { AssignorJwtPayload } from '../types';
 import { AssignorService } from '../assignor/assignor.service';
 import amqp, { Channel, ChannelWrapper } from 'amqp-connection-manager';
 
+const RABBITMQ_USER = process.env.RABBITMQ_USER;
+const RABBITMQ_PASSWORD = process.env.RABBITMQ_PASSWORD;
+const RABBITMQ_HOST = process.env.RABBITMQ_HOST;
+const RABBITMQ_PORT = process.env.RABBITMQ_PORT;
+
 @Injectable()
 export class PayableService {
   private channelWrapper: ChannelWrapper;
@@ -20,7 +25,9 @@ export class PayableService {
     private payableRepository: PayableRepository,
     private assignorService: AssignorService,
   ) {
-    const connection = amqp.connect(['amqp://admin:admin@rabbitmq:5672']);
+    const connection = amqp.connect([
+      `amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@${RABBITMQ_HOST}:${RABBITMQ_PORT}`,
+    ]);
     this.channelWrapper = connection.createChannel({
       setup: (channel: Channel) => {
         return channel.assertQueue('payable_queue', { durable: true });
