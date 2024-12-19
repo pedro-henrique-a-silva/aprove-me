@@ -32,6 +32,10 @@ export default class PayableRepository {
       },
     });
 
+    if (!assignor) {
+      return null;
+    }
+
     const assignorToReturn = new Assignor();
 
     assignorToReturn.id = assignor.id;
