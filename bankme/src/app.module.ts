@@ -15,7 +15,7 @@ import { join } from 'path';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 const templatePath = isDevelopment
   ? join(__dirname, '../../', 'src/templates')
-  : join(__dirname, '../../', 'src/templates');
+  : join(__dirname, 'templates');
 
 @Module({
   imports: [
