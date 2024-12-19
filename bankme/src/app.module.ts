@@ -17,6 +17,11 @@ const templatePath = isDevelopment
   ? join(__dirname, '../../', 'src/templates')
   : join(__dirname, 'templates');
 
+const RABBITMQ_USER = process.env.RABBITMQ_USER;
+const RABBITMQ_PASSWORD = process.env.RABBITMQ_PASSWORD;
+const RABBITMQ_HOST = process.env.RABBITMQ_HOST;
+const RABBITMQ_PORT = process.env.RABBITMQ_PORT;
+
 @Module({
   imports: [
     AuthModule,
@@ -35,7 +40,9 @@ const templatePath = isDevelopment
         name: 'RABBITMQ_SERVICE',
         transport: Transport.RMQ,
         options: {
-          urls: ['amqp://admin:admin@rabbitmq:5672'],
+          urls: [
+            `amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@${RABBITMQ_HOST}:${RABBITMQ_PORT}`,
+          ],
           queue: 'payable_queue',
           queueOptions: {
             durable: true,
