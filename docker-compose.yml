@@ -18,11 +18,14 @@ services:
       retries: 5
 
   bankme_api:
-    build: ./bankme
+    build:
+      context: ./bankme
+      dockerfile: Dockerfile.dev
+
     container_name: bankme_api
+    command: run start:dev
     tty: true
     stdin_open: true
-    command: run start:dev
 
     working_dir: /app
     volumes:
