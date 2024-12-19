@@ -4,6 +4,7 @@ import PayableRepository from './micro-servico.repository';
 import { EmailService } from '../email/email.service';
 import PayableCreationDto from '../payable/dto/PayableCreationDto';
 import { DeadProducerService } from './dead-producer.service';
+import Payable from '../entity/Payable';
 
 @Injectable()
 export class MicroServicoService {
@@ -31,29 +32,42 @@ export class MicroServicoService {
         payable.assignorId,
       );
 
-      Logger.log(`Trying new Payable -> ${payableString}`);
+      if (!assignor) {
+        this.logger.error(`Assignor not found -> ${payableString}`);
+        await this.deadProducerService.addToDeadQueue(payable);
+        await this.emailService.sendFailurePaymentEmail(
+          'Assignor not found',
+          payable.value,
+        );
+        continue;
+      }
+
+      this.logger.log(`Trying new Payable -> ${payableString}`);
       while (!success && retries < this.maxAttempts) {
         try {
-          await this.payableRepository.createPayableRegister(
-            payable.toEntity(),
-          );
+          const payableEntity = new Payable();
+
+          payableEntity.value = payable.value;
+          payableEntity.emissionDate = payable.emissionDate;
+          payableEntity.assignorId = payable.assignorId;
+
+          await this.payableRepository.createPayableRegister(payableEntity);
 
           success = true;
           this.emailService.sendSuccessPaymentEmail(
-            assignor.email,
             assignor.name,
             payable.value,
           );
 
-          Logger.log(`Insert payable -> ${payableString}`);
+          this.logger.log(`Insert payable -> ${payableString}`);
         } catch (error) {
+          this.logger.error(`Failed Inserting payable -> ${error}`);
           retries++;
         }
       }
       if (!success) {
         await this.deadProducerService.addToDeadQueue(payable);
-        await this.emailService.sendSuccessPaymentEmail(
-          assignor.email,
+        await this.emailService.sendFailurePaymentEmail(
           assignor.name,
           payable.value,
         );
