@@ -2,9 +2,10 @@ name: Deploy to EC2 with Docker
 on:
   push:
     branches: [pedro-henrique-a-silva-bankme-2024]
+
 jobs:
   deploy:
-    name: Deploy to EC2
+    name: Deploy
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the files
@@ -21,35 +22,59 @@ jobs:
       - name: Roda os testes do backend
         run: npm run test:back
      
-      - name: Setup SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.AWS_EC2_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.AWS_EC2_HOST }} >> ~/.ssh/known_hosts
+      - name: Configura credenciais AWS
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Deploy to EC2
+      - name: Login no Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, e push de imagen da API 
+        id: build-api-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
         run: |
-            ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.AWS_EC2_USER }}@${{ secrets.AWS_EC2_HOST }} << 'EOF'
-              rm -rf ~/aprove-me &&
-              git clone -b pedro-henrique-a-silva-bankme-2024 git@github.com:pedro-henrique-a-silva/aprove-me.git &&
-              echo "DB_NAME=${{ secrets.DB_NAME }}" >> ~/aprove-me/bankme/.env &&
-              echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> ~/aprove-me/bankme/.env &&
-              echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> ~/aprove-me/bankme/.env &&
-              echo "JWT_EXPIRES_IN=${{ secrets.JWT_EXPIRES_IN }}" >> ~/aprove-me/bankme/.env &&
-              echo "URL=${{ secrets.URL }}" >> ~/aprove-me/bankme/.env &&
-              echo "PORT=${{ secrets.PORT }}" >> ~/aprove-me/bankme/.env &&
-              echo "NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}" >> ~/aprove-me/bankme/.env &&
-              echo "NODE_ENV=production" >> ~/aprove-me/bankme/.env &&
-              echo "SMTP_HOST=${{ secrets.SMTP_HOST }}" >> ~/aprove-me/bankme/.env &&
-              echo "SMTP_PORT=${{ secrets.SMTP_PORT }}" >> ~/aprove-me/bankme/.env &&
-              echo "SMTP_TO=${{ secrets.SMTP_TO }}" >> ~/aprove-me/bankme/.env &&
-              echo "SMTP_FROM=${{ secrets.SMTP_FROM }}" >> ~/aprove-me/bankme/.env &&
-              echo "SMTP_USERNAME=${{ secrets.SMTP_USERNAME }}" >> ~/aprove-me/bankme/.env &&
-              echo "SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}" >> ~/aprove-me/bankme/.env &&
-              cp ~/aprove-me/bankme/.env ~/aprove-me/web/.env &&
-              cd ~/aprove-me &&
-              docker-compose down -v &&
-              docker-compose up -d --build
-            EOF
+          docker build -t $ECR_REGISTRY/${{ secrets.BACKEND_REPOSITORY_NAME}}:$IMAGE_TAG ./bankme
+          docker push $ECR_REGISTRY/${{ secrets.BACKEND_REPOSITORY_NAME}}:$IMAGE_TAG
+          echo "api_image=$ECR_REGISTRY/${{ secrets.BACKEND_REPOSITORY_NAME}}:$IMAGE_TAG" >> $GITHUB_OUTPUT
+      
+      - name: Build, tag, e push de imagen Web
+        id: build-web-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/${{ secrets.WEB_REPOSITORY_NAME}}:$IMAGE_TAG ./web
+          docker push $ECR_REGISTRY/${{ secrets.WEB_REPOSITORY_NAME}}:$IMAGE_TAG
+          echo "api_image=$ECR_REGISTRY/${{ secrets.WEB_REPOSITORY_NAME}}:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+      - name: Render ECS task definition for fist container
+        id: render-api-container
+        uses: aws-actions/amazon-ecs-render-task-definition@v2
+        with:
+          task-definition: ${{ secrets.TASK_DEFINITION_TEMPLATE }}
+          container-name: bankme-api
+          image: ${{ steps.build-api-image.outputs.api_image }}
+  
+      - name: Update ECS task definition for second container
+        id: render-web-container
+        uses: aws-actions/amazon-ecs-render-task-definition@v2
+        with:
+          task-definition: ${{ secrets.TASK_DEFINITION_TEMPLATE }}
+          container-name: bankme-web
+          image: ${{ steps.build-web-image.outputs.api_image }}
+
+      - name: Deploy ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render-web-container.outputs.task-definition }}
+          cluster: ${{ secrets.ECS_CLUSTER }}
+          service: ${{ secrets.ECS_SERVICE }}
+          wait-for-service-stability: true
+           
 
