@@ -103,16 +103,7 @@
                 }
             ],
             "essential": true,
-            "environment": [
-                {
-                    "name": "NEXT_SERVER_API_URL",
-                    "value": "http://bankme_api:3001"
-                },
-                {
-                    "name": "NEXT_PUBLIC_API_URL",
-                    "value": "https://ec2-3-141-202-243.us-east-2.compute.amazonaws.com:3001"
-                }
-            ],
+         
             "environmentFiles": [],
             "mountPoints": [],
             "volumesFrom": [],
