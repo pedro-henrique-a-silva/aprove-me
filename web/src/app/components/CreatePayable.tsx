@@ -5,7 +5,7 @@ import { Assignor } from '../types/assignor';
 import { getTokenFromLocalStore } from '../utils/local-store-helper';
 import { createPayableSchema } from '../schemas/create-payable';
 import { ZodError } from 'zod';
-import { formatDate, formatDateToApiFormat } from '../utils/date-helper';
+import { formatDate, formatDateToApiFormat, formatToDate } from '../utils/date-helper';
 import { cn } from "@/lib/utils"
 import { useParams, useRouter } from 'next/navigation';
 import { Payable } from '../types/payable';
@@ -39,10 +39,7 @@ function CreatePayable(props: CreatePayableProps) {
 
   async function handleSubmit (e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData.entries());
-
-    const {success, error} = createPayableSchema.safeParse(data);
+    const {success, error} = createPayableSchema.safeParse({...formData, assignors: selectedOption});
     if (!success) {
       setError(JSON.parse(error.message).map((e: ZodError) => e.message));
       return;
@@ -54,8 +51,8 @@ function CreatePayable(props: CreatePayableProps) {
       const url = isEditing ? `/integrations/payable/${id}` : '/integrations/payable'
       const axioMethod = isEditing ? connection.put : connection.post;
       const response = await axioMethod(url, {
-          emissionDate: formatDateToApiFormat(data.emissionDate as string),
-          value: data.value,
+          emissionDate: formatDateToApiFormat(formData.emissionDate as string),
+          value: formData.value,
           assignorId: selectedOption,
       },
       {
@@ -175,8 +172,11 @@ function CreatePayable(props: CreatePayableProps) {
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
-                  selected={formData.emissionDate}
-                  onSelect={(e: Date) => setFormData((prev) => ({...prev, emissionDate: formatDateToApiFormat(e.toUTCString())}))}
+                  required
+                  selected={formatToDate(formData.emissionDate)}
+                  onSelect={(e) => {
+                    setFormData((prev) =>e ? ({...prev, emissionDate: formatDateToApiFormat(e.toISOString())}) : prev)
+                  }}
                   initialFocus
                 />
               </PopoverContent>
@@ -185,7 +185,6 @@ function CreatePayable(props: CreatePayableProps) {
         <div className='flex flex-col pb-1'>
           <Label className='mb-2' htmlFor="username">Cedente:</Label>
           <Select
-            id="assignors"
             name="assignors"
             value={selectedOption || ''}
             onValueChange={handleChange}
