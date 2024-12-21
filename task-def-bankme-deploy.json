@@ -1,0 +1,126 @@
+{
+    "containerDefinitions": [
+        {
+            "name": "bankme_api",
+            "image": "627640567466.dkr.ecr.us-east-2.amazonaws.com/bankme/backend:latest",
+            "cpu": 512,
+            "memory": 2560,
+            "memoryReservation": 2048,
+            "links": [
+                "rabbitmq:rabbitmq"
+            ],
+            "portMappings": [
+                {
+                    "name": "bankme_api-3001-tcp",
+                    "containerPort": 3001,
+                    "hostPort": 3001,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                }
+            ],
+            "essential": true,
+            "mountPoints": [],
+            "volumesFrom": [],
+            "dependsOn": [
+                {
+                    "containerName": "rabbitmq",
+                    "condition": "HEALTHY"
+                }
+            ],
+            "healthCheck": {
+                "command": [
+                    "CMD-SHELL",
+                    "curl -f http://localhost:3001 || exit 1"
+                ],
+                "interval": 30,
+                "timeout": 10,
+                "retries": 5
+            },
+            "systemControls": []
+        },
+        {
+            "name": "rabbitmq",
+            "image": "rabbitmq:3.8.16-management",
+            "cpu": 512,
+            "memory": 2560,
+            "memoryReservation": 2048,
+            "portMappings": [
+                {
+                    "name": "rabbitmq-5672-tcp",
+                    "containerPort": 5672,
+                    "hostPort": 5672,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                },
+                {
+                    "name": "rabbitmq-15672-tcp",
+                    "containerPort": 15672,
+                    "hostPort": 15672,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                }
+            ],
+            "essential": true,
+            "mountPoints": [],
+            "volumesFrom": [],
+            "healthCheck": {
+                "command": [
+                    "CMD-SHELL",
+                    "rabbitmq-diagnostics -q ping || exit 1"
+                ],
+                "interval": 30,
+                "timeout": 10,
+                "retries": 5
+            },
+            "systemControls": []
+        },
+        {
+            "name": "bankme-web",
+            "image": "627640567466.dkr.ecr.us-east-2.amazonaws.com/bankme/frontend:latest",
+            "cpu": 512,
+            "memory": 2560,
+            "memoryReservation": 2048,
+            "links": [
+                "bankme_api:bankme_api"
+            ],
+            "portMappings": [
+                {
+                    "name": "bankme-web-port",
+                    "containerPort": 3000,
+                    "hostPort": 3000,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                }
+            ],
+            "essential": true,
+            "environmentFiles": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "healthCheck": {
+                "command": [
+                    "CMD-SHELL",
+                    "curl -f http://localhost:3000 || exit 1"
+                ],
+                "interval": 30,
+                "timeout": 10,
+                "retries": 5
+            },
+            "systemControls": []
+        }
+    ],
+    "family": "task-def-bankme-deploy",
+    "executionRoleArn": "arn:aws:iam::627640567466:role/ecsTaskExecutionRole",
+    "networkMode": "bridge",
+    "volumes": [],
+    "placementConstraints": [],
+    "requiresCompatibilities": [
+        "EC2"
+    ],
+    "cpu": "2048",
+    "memory": "8192",
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    },
+    "tags": []
+}
