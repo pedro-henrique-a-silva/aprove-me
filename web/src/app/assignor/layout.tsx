@@ -6,11 +6,11 @@ export default function AssignorLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body>
-        <Header/>
+    <>
+      <Header/>
+      <div className="flex w-100 h-100 justify-center items-center">
         <main>{children}</main>
-      </body>
-    </html>
+      </div>
+    </>
   )
 }
