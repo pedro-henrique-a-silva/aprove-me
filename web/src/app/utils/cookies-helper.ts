@@ -7,3 +7,8 @@ export async function saveCookie(data: string) {
     httpOnly: true, 
   });
 }
+
+export async function deleteCookie() {
+  const cookieStore = await cookies()
+  cookieStore.delete('token');
+}
