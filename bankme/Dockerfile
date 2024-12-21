@@ -27,6 +27,6 @@ RUN npm install --omit=dev
 RUN npx prisma generate
 RUN npx prisma db push --force-reset
 
-EXPOSE 3000
+EXPOSE 3001
 
 CMD ["node", "dist/src/main"]
