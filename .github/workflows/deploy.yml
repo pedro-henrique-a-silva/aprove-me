@@ -65,7 +65,7 @@ jobs:
         id: render-web-container
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: ${{ secrets.TASK_DEFINITION_TEMPLATE }}
+          task-definition: ${{ steps.render-api-container.outputs.task-definition }}
           container-name: bankme-web
           image: ${{ steps.build-web-image.outputs.api_image }}
 
