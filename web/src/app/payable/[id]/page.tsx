@@ -3,9 +3,7 @@ import React from 'react'
 
 function page() {
   return (
-    <div>
-      <PayableDetail/>
-    </div>
+    <PayableDetail/>
   )
 }
 
