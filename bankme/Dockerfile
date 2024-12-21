@@ -22,6 +22,8 @@ COPY --from=builder /app/prisma ./prisma
 
 ENV DATABASE_URL="file:./prisma/dev.db"
 
+RUN apk add --no-cache curl
+
 RUN npm install --omit=dev
 
 RUN npx prisma generate
