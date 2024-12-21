@@ -54,7 +54,7 @@ function ListAssignor() {
 
   return (
     <>
-    <Table className='w-3/5 mx-auto'>
+    <Table className='w-4/5 mx-auto'>
       <TableCaption>Lista de Cedentes.</TableCaption>
       <TableHeader>
         <TableRow>
