@@ -1,0 +1,63 @@
+version: '3'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3.8.16-management
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 8080:15672
+
+    environment:
+      RABBITMQ_DEFAULT_USER: "admin"
+      RABBITMQ_DEFAULT_PASS: "admin"
+
+    healthcheck:
+      test: ["CMD-SHELL", "rabbitmq-diagnostics -q ping"]
+      timeout: 10s
+      retries: 5
+
+  bankme_api:
+    build:
+      context: ./bankme
+      dockerfile: Dockerfile
+
+    container_name: bankme_api
+    tty: true
+    stdin_open: true
+
+    working_dir: /app
+
+    ports:
+      - 3001:3001
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001"]
+      timeout: 10s
+      retries: 5
+
+    env_file:
+     - ./bankme/.env
+
+  web:
+    container_name: 'bankme_web'
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+
+    working_dir: /app
+    tty: true
+    stdin_open: true
+    env_file:
+      - ./web/.env
+
+    ports:
+      - 3000:3000
+
+    depends_on:
+      - bankme_api
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      timeout: 10s
+      retries: 5
