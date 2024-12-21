@@ -59,6 +59,22 @@ jobs:
         with:
           task-definition: ${{ secrets.TASK_DEFINITION_TEMPLATE }}
           container-name: bankme_api
+          environment-variables: |
+            DATABASE_URL=${{secrets.DATABASE_URL}}
+            JWT_SECRET=${{secrets.JWT_SECRET}}
+            JWT_EXPIRES_IN=${{secrets.JWT_EXPIRES_IN}}
+            PORT=${{secrets.PORT}}
+            NODE_ENV=${{secrets.NODE_ENV}}
+            RABBITMQ_HOST=${{secrets.RABBITMQ_HOST}}
+            RABBITMQ_PORT=${{secrets.RABBITMQ_HOST}}
+            RABBITMQ_USER=${{secrets.RABBITMQ_HOST}}
+            RABBITMQ_PASSWORD=${{secrets.RABBITMQ_PASSWORD}}
+            SMTP_HOST=${{secrets.SMTP_HOST}}
+            SMTP_PORT=${{secrets.SMTP_PORT}}
+            SMTP_TO=${{secrets.SMTP_PORT}}
+            SMTP_FROM=${{secrets.SMTP_FROM}}
+            SMTP_USERNAME=${{secrets.SMTP_FROM}}
+            SMTP_PASSWORD=${{secrets.SMTP_PASSWORD}}
           image: ${{ steps.build-api-image.outputs.api_image }}
   
       - name: Update ECS task definition for second container
@@ -67,6 +83,9 @@ jobs:
         with:
           task-definition: ${{ steps.render-api-container.outputs.task-definition }}
           container-name: bankme-web
+          environment-variables: |
+            NEXT_PUBLIC_API_URL=${{secrets.NEXT_PUBLIC_API_URL}}
+            NEXT_SERVER_API_URL=${{secrets.NEXT_SERVER_API_URL}}
           image: ${{ steps.build-web-image.outputs.api_image }}
 
       - name: Deploy ECS task definition
