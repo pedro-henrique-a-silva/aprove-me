@@ -20,8 +20,6 @@ COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/src/templates ./dist/src/templates
 COPY --from=builder /app/prisma ./prisma
 
-ENV DATABASE_URL="file:./prisma/dev.db"
-
 RUN npm install --omit=dev
 
 RUN npx prisma generate
