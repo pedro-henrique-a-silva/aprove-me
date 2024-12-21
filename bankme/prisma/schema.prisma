@@ -22,6 +22,8 @@ model Users {
   id          String @id @default(uuid())
   username    String @unique
   password    String
+
+  @@map("users")
 }
 
 model Assignor {
