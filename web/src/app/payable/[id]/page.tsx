@@ -1,4 +1,4 @@
-import PayableDetail from '@/app/components/PayableDetail'
+import PayableDetail from '../../components/PayableDetail'
 import React from 'react'
 
 function page() {
