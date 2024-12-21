@@ -55,7 +55,7 @@ jobs:
 
       - name: Render ECS task definition for fist container
         id: render-api-container
-        uses: aws-actions/amazon-ecs-render-task-definition@v2
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: ${{ secrets.TASK_DEFINITION_TEMPLATE }}
           container-name: bankme-api
@@ -63,7 +63,7 @@ jobs:
   
       - name: Update ECS task definition for second container
         id: render-web-container
-        uses: aws-actions/amazon-ecs-render-task-definition@v2
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: ${{ secrets.TASK_DEFINITION_TEMPLATE }}
           container-name: bankme-web
