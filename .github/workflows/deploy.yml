@@ -58,7 +58,7 @@ jobs:
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: ${{ secrets.TASK_DEFINITION_TEMPLATE }}
-          container-name: bankme-api
+          container-name: bankme_api
           image: ${{ steps.build-api-image.outputs.api_image }}
   
       - name: Update ECS task definition for second container
