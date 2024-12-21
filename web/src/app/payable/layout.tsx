@@ -8,9 +8,9 @@ export default function PayableLayout({
   return (
     <>
       <Header/>
-      <div className="flex w-100 h-100 justify-center items-center">
-        <main>{children}</main>
-      </div>
+      <main className="flex w-100 h-100 justify-center items-center">
+        {children}
+      </main>
     </>
   )
 }
