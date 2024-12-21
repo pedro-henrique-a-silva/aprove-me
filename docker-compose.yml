@@ -45,7 +45,10 @@ services:
 
   web:
     container_name: 'bankme_web'
-    build: ./web
+    build:
+      context: ./web
+      dockerfile: Dockerfile.dev
+      
     command: run dev
     env_file:
       - ./web/.env
